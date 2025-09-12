@@ -3,6 +3,10 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3000);
+
+  // Aktifkan CORS untuk semua origin. Ini penting untuk interaksi dengan frontend.
+  app.enableCors();
+
+  await app.listen(3001); // diset port 3001 agar tdk bentrok
 }
 bootstrap();
