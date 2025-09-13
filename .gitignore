@@ -7,6 +7,9 @@
 # Cache
 .cache
 
+#data gambar
+/public
+
 # Environment variables
 # Abaikan semua file .env, termasuk .env.local, .env.development, dll.
 .env*
