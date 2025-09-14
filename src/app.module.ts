@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { MongooseModule } from '@nestjs/mongoose';
 import { MenuModule } from './menu/menu.module';
-import { Menu } from './menu/menu.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 
@@ -14,23 +13,11 @@ import { join } from 'path';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
-    TypeOrmModule.forRootAsync({
+    MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: 'mysql',
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        username: configService.get<string>('DB_USERNAME'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_DATABASE'),
-        
-        // --- PERBAIKAN DEFINITIF ---
-        // 2. Gunakan kelas yang sudah diimpor, bukan pola pencarian file.
-        // Ini adalah cara yang paling aman dan anti-gagal.
-        entities: [Menu],
-
-        synchronize: true,
+        uri: configService.get<string>('MONGODB_URI'),
       }),
     }),
     MenuModule,

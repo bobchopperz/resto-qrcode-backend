@@ -1,21 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Menu } from './menu.entity';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Menu, MenuDocument } from './menu.schema';
 
 @Injectable()
 export class MenuService {
   constructor(
-    // Menyuntikkan repository dari entity Menu
-    @InjectRepository(Menu)
-    private menusRepository: Repository<Menu>,
+    @InjectModel(Menu.name) private menuModel: Model<MenuDocument>,
   ) {}
 
   /**
    * Mengambil semua data menu dari database.
-   * @returns {Promise<Menu[]>} Array dari semua menu.
    */
-  findAll(): Promise<Menu[]> {
-    return this.menusRepository.find();
+  async findAll(): Promise<Menu[]> {
+    return this.menuModel.find().exec();
   }
 }
