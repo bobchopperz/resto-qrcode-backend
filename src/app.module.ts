@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MenuModule } from './menu/menu.module';
+import { OrderModule } from './order/order.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 
@@ -21,6 +22,7 @@ import { join } from 'path';
       }),
     }),
     MenuModule,
+    OrderModule,
   ],
   controllers: [],
   providers: [],

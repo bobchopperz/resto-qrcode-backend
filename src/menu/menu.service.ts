@@ -15,4 +15,11 @@ export class MenuService {
   async findAll(): Promise<Menu[]> {
     return this.menuModel.find().exec();
   }
+
+  /**
+   * Mencari satu menu berdasarkan ID-nya.
+   */
+  async findById(id: string): Promise<MenuDocument> {
+    return this.menuModel.findById(id).exec();
+  }
 }

@@ -10,5 +10,6 @@ import { MenuService } from './menu.service';
   ],
   controllers: [MenuController],
   providers: [MenuService],
+  exports: [MenuService], // <-- Tambahkan baris ini
 })
 export class MenuModule {}
