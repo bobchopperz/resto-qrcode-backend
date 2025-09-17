@@ -6,7 +6,7 @@ export type MenuDocument = Menu & Document;
 @Schema({ timestamps: true, collection: 'menu' })
 export class Menu {
     @Prop({ required: true, unique: true })
-    name: string;
+    nama: string;
 
     @Prop({ required: true })
     price: number;

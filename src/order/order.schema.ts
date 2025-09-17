@@ -1,13 +1,16 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 import { Menu } from '../menu/menu.schema';
 
-export type OrderDocument = Order & Document;
+export type OrderDocument = HydratedDocument<Order>;
 
 @Schema({ _id: false }) // Sub-dokumen tidak memerlukan _id sendiri
 class OrderItem {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Menu', required: true })
   menu_id: Menu;
+
+  @Prop({ required: true })
+  name: string; // Nama menu, diambil dari koleksi Menu
 
   @Prop({ required: true })
   kuantiti: number;
