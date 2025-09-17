@@ -71,7 +71,15 @@ export class OrderService {
           .map(orderItem => `- ${orderItem.name} (x${orderItem.kuantiti})`)
           .join('\n');
 
-        const message = `Halo Kak ${savedOrder.nama_pelanggan}, rincian order Kakak ${savedOrder.nama_pelanggan} sebagai berikut :\n${rincianMenu}\n\nTotal Order: Rp ${savedOrder.total_kesuluruhan.toLocaleString('id-ID')}`;
+        const tanggalOrder = savedOrder.timestamp.toLocaleDateString('id-ID',{
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+        });
+
+        const message = `Halo Kak ${savedOrder.nama_pelanggan}, rincian order Kakak ${tanggalOrder} sebagai berikut :\n\n${rincianMenu}\n\nTotal Order: Rp ${savedOrder.total_kesuluruhan.toLocaleString('id-ID')}`;
 
         const payload = {
           number: savedOrder.no_wa_pelanggan,

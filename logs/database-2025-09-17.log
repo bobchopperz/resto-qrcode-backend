@@ -194,3 +194,131 @@
 {"context":"OrderService","level":"info","message":"Order successfully saved with ID: 52fa0cd5-034e-48b5-8b91-ee55dea66486","timestamp":"2025-09-17T13:45:20.386Z"}
 {"context":"OrderService","level":"info","message":"Sending WhatsApp message for order 52fa0cd5-034e-48b5-8b91-ee55dea66486 to 6281268778159","timestamp":"2025-09-17T13:45:20.395Z"}
 {"context":"OrderService","level":"info","message":"WhatsApp message sent successfully for order 52fa0cd5-034e-48b5-8b91-ee55dea66486","timestamp":"2025-09-17T13:45:20.893Z"}
+{"context":"NestFactory","level":"info","message":"Starting Nest application...","timestamp":"2025-09-17T13:48:43.250Z"}
+{"context":"InstanceLoader","level":"info","message":"AppModule dependencies initialized","timestamp":"2025-09-17T13:48:43.264Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-09-17T13:48:43.266Z"}
+{"context":"InstanceLoader","level":"info","message":"HttpModule dependencies initialized","timestamp":"2025-09-17T13:48:43.267Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigHostModule dependencies initialized","timestamp":"2025-09-17T13:48:43.267Z"}
+{"context":"InstanceLoader","level":"info","message":"ServeStaticModule dependencies initialized","timestamp":"2025-09-17T13:48:43.268Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigModule dependencies initialized","timestamp":"2025-09-17T13:48:43.268Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigModule dependencies initialized","timestamp":"2025-09-17T13:48:43.268Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseCoreModule dependencies initialized","timestamp":"2025-09-17T13:48:43.296Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-09-17T13:48:43.302Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-09-17T13:48:43.302Z"}
+{"context":"InstanceLoader","level":"info","message":"MenuModule dependencies initialized","timestamp":"2025-09-17T13:48:43.302Z"}
+{"context":"InstanceLoader","level":"info","message":"OrderModule dependencies initialized","timestamp":"2025-09-17T13:48:43.303Z"}
+{"context":"RoutesResolver","level":"info","message":"MenuController {/menu}:","timestamp":"2025-09-17T13:48:43.307Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/menu, GET} route","timestamp":"2025-09-17T13:48:43.309Z"}
+{"context":"RoutesResolver","level":"info","message":"OrderController {/order}:","timestamp":"2025-09-17T13:48:43.309Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/order, POST} route","timestamp":"2025-09-17T13:48:43.310Z"}
+{"context":"NestApplication","level":"info","message":"Nest application successfully started","timestamp":"2025-09-17T13:48:43.313Z"}
+{"level":"info","message":"Application is running on: http://[::1]:3001","timestamp":"2025-09-17T13:48:43.318Z"}
+{"context":{"data":{"_id":"3521ce6b-b747-4a2e-99d0-88e9308d6c11","nama_pelanggan":"bob","no_wa_pelanggan":"6281268778159","orders":[{"kuantiti":1,"menu_id":"68c675dd92af3629e55f99e1","modal":10000,"sub_total":12000,"subtotal_margin":2000,"subtotal_modal":10000}],"timestamp":"2025-09-17T13:49:44.689Z","total_kesuluruhan":12000,"total_margin_keseluruhan":2000,"total_modal_keseluruhan":10000}},"level":"error","message":"Failed to save order to database","stack":["ValidationError: Order validation failed: orders.0.name: Path `name` is required.\n    at Document.invalidate (D:\\Code\\react\\resto-qrcode-backend\\node_modules\\mongoose\\lib\\document.js:3358:32)\n    at Subdocument.invalidate (D:\\Code\\react\\resto-qrcode-backend\\node_modules\\mongoose\\lib\\types\\subdocument.js:229:12)\n    at D:\\Code\\react\\resto-qrcode-backend\\node_modules\\mongoose\\lib\\document.js:3119:17\n    at D:\\Code\\react\\resto-qrcode-backend\\node_modules\\mongoose\\lib\\schemaType.js:1416:9\n    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)"],"timestamp":"2025-09-17T13:49:44.760Z"}
+{"context":"ExceptionsHandler","level":"error","message":"Order validation failed: orders.0.name: Path `name` is required.","stack":["ValidationError: Order validation failed: orders.0.name: Path `name` is required.\n    at Document.invalidate (D:\\Code\\react\\resto-qrcode-backend\\node_modules\\mongoose\\lib\\document.js:3358:32)\n    at Subdocument.invalidate (D:\\Code\\react\\resto-qrcode-backend\\node_modules\\mongoose\\lib\\types\\subdocument.js:229:12)\n    at D:\\Code\\react\\resto-qrcode-backend\\node_modules\\mongoose\\lib\\document.js:3119:17\n    at D:\\Code\\react\\resto-qrcode-backend\\node_modules\\mongoose\\lib\\schemaType.js:1416:9\n    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)"],"timestamp":"2025-09-17T13:49:44.764Z"}
+{"context":"NestFactory","level":"info","message":"Starting Nest application...","timestamp":"2025-09-17T13:50:58.461Z"}
+{"context":"InstanceLoader","level":"info","message":"AppModule dependencies initialized","timestamp":"2025-09-17T13:50:58.476Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-09-17T13:50:58.477Z"}
+{"context":"InstanceLoader","level":"info","message":"HttpModule dependencies initialized","timestamp":"2025-09-17T13:50:58.477Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigHostModule dependencies initialized","timestamp":"2025-09-17T13:50:58.478Z"}
+{"context":"InstanceLoader","level":"info","message":"ServeStaticModule dependencies initialized","timestamp":"2025-09-17T13:50:58.478Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigModule dependencies initialized","timestamp":"2025-09-17T13:50:58.479Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigModule dependencies initialized","timestamp":"2025-09-17T13:50:58.479Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseCoreModule dependencies initialized","timestamp":"2025-09-17T13:50:58.510Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-09-17T13:50:58.516Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-09-17T13:50:58.517Z"}
+{"context":"InstanceLoader","level":"info","message":"MenuModule dependencies initialized","timestamp":"2025-09-17T13:50:58.519Z"}
+{"context":"InstanceLoader","level":"info","message":"OrderModule dependencies initialized","timestamp":"2025-09-17T13:50:58.519Z"}
+{"context":"RoutesResolver","level":"info","message":"MenuController {/menu}:","timestamp":"2025-09-17T13:50:58.523Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/menu, GET} route","timestamp":"2025-09-17T13:50:58.526Z"}
+{"context":"RoutesResolver","level":"info","message":"OrderController {/order}:","timestamp":"2025-09-17T13:50:58.526Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/order, POST} route","timestamp":"2025-09-17T13:50:58.527Z"}
+{"context":"NestApplication","level":"info","message":"Nest application successfully started","timestamp":"2025-09-17T13:50:58.530Z"}
+{"level":"info","message":"Application is running on: http://[::1]:3001","timestamp":"2025-09-17T13:50:58.538Z"}
+{"context":"OrderService","level":"info","message":"Order successfully saved with ID: a5618cc9-9ab9-46c3-86fc-846afe150229","timestamp":"2025-09-17T13:51:12.688Z"}
+{"context":"OrderService","level":"info","message":"Sending WhatsApp message for order a5618cc9-9ab9-46c3-86fc-846afe150229 to 6281268778159","timestamp":"2025-09-17T13:51:12.699Z"}
+{"context":"OrderService","level":"info","message":"WhatsApp message sent successfully for order a5618cc9-9ab9-46c3-86fc-846afe150229","timestamp":"2025-09-17T13:51:13.201Z"}
+{"context":"OrderService","level":"info","message":"Order successfully saved with ID: fef40e47-f10c-4743-9883-5fbc341d8116","timestamp":"2025-09-17T13:51:55.478Z"}
+{"context":"OrderService","level":"info","message":"Sending WhatsApp message for order fef40e47-f10c-4743-9883-5fbc341d8116 to 6281268778159","timestamp":"2025-09-17T13:51:55.479Z"}
+{"context":"OrderService","level":"info","message":"WhatsApp message sent successfully for order fef40e47-f10c-4743-9883-5fbc341d8116","timestamp":"2025-09-17T13:51:55.942Z"}
+{"context":"NestFactory","level":"info","message":"Starting Nest application...","timestamp":"2025-09-17T13:56:20.078Z"}
+{"context":"InstanceLoader","level":"info","message":"AppModule dependencies initialized","timestamp":"2025-09-17T13:56:20.089Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-09-17T13:56:20.089Z"}
+{"context":"InstanceLoader","level":"info","message":"HttpModule dependencies initialized","timestamp":"2025-09-17T13:56:20.090Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigHostModule dependencies initialized","timestamp":"2025-09-17T13:56:20.091Z"}
+{"context":"InstanceLoader","level":"info","message":"ServeStaticModule dependencies initialized","timestamp":"2025-09-17T13:56:20.092Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigModule dependencies initialized","timestamp":"2025-09-17T13:56:20.092Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigModule dependencies initialized","timestamp":"2025-09-17T13:56:20.093Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseCoreModule dependencies initialized","timestamp":"2025-09-17T13:56:20.123Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-09-17T13:56:20.128Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-09-17T13:56:20.129Z"}
+{"context":"InstanceLoader","level":"info","message":"MenuModule dependencies initialized","timestamp":"2025-09-17T13:56:20.130Z"}
+{"context":"InstanceLoader","level":"info","message":"OrderModule dependencies initialized","timestamp":"2025-09-17T13:56:20.130Z"}
+{"context":"RoutesResolver","level":"info","message":"MenuController {/menu}:","timestamp":"2025-09-17T13:56:20.134Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/menu, GET} route","timestamp":"2025-09-17T13:56:20.137Z"}
+{"context":"RoutesResolver","level":"info","message":"OrderController {/order}:","timestamp":"2025-09-17T13:56:20.138Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/order, POST} route","timestamp":"2025-09-17T13:56:20.140Z"}
+{"context":"NestApplication","level":"info","message":"Nest application successfully started","timestamp":"2025-09-17T13:56:20.143Z"}
+{"level":"info","message":"Application is running on: http://[::1]:3001","timestamp":"2025-09-17T13:56:20.148Z"}
+{"context":"NestFactory","level":"info","message":"Starting Nest application...","timestamp":"2025-09-17T13:56:43.780Z"}
+{"context":"InstanceLoader","level":"info","message":"AppModule dependencies initialized","timestamp":"2025-09-17T13:56:43.801Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-09-17T13:56:43.803Z"}
+{"context":"InstanceLoader","level":"info","message":"HttpModule dependencies initialized","timestamp":"2025-09-17T13:56:43.804Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigHostModule dependencies initialized","timestamp":"2025-09-17T13:56:43.805Z"}
+{"context":"InstanceLoader","level":"info","message":"ServeStaticModule dependencies initialized","timestamp":"2025-09-17T13:56:43.806Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigModule dependencies initialized","timestamp":"2025-09-17T13:56:43.807Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigModule dependencies initialized","timestamp":"2025-09-17T13:56:43.807Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseCoreModule dependencies initialized","timestamp":"2025-09-17T13:56:43.840Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-09-17T13:56:43.849Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-09-17T13:56:43.850Z"}
+{"context":"InstanceLoader","level":"info","message":"MenuModule dependencies initialized","timestamp":"2025-09-17T13:56:43.851Z"}
+{"context":"InstanceLoader","level":"info","message":"OrderModule dependencies initialized","timestamp":"2025-09-17T13:56:43.852Z"}
+{"context":"RoutesResolver","level":"info","message":"MenuController {/menu}:","timestamp":"2025-09-17T13:56:43.858Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/menu, GET} route","timestamp":"2025-09-17T13:56:43.861Z"}
+{"context":"RoutesResolver","level":"info","message":"OrderController {/order}:","timestamp":"2025-09-17T13:56:43.861Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/order, POST} route","timestamp":"2025-09-17T13:56:43.863Z"}
+{"context":"NestApplication","level":"info","message":"Nest application successfully started","timestamp":"2025-09-17T13:56:43.868Z"}
+{"level":"info","message":"Application is running on: http://[::1]:3001","timestamp":"2025-09-17T13:56:43.876Z"}
+{"context":"OrderService","level":"info","message":"Order successfully saved with ID: 9b27b947-6d8a-4044-9a2e-069ea74b536f","timestamp":"2025-09-17T13:57:14.979Z"}
+{"context":"OrderService","level":"info","message":"Sending WhatsApp message for order 9b27b947-6d8a-4044-9a2e-069ea74b536f to 6281268778159","timestamp":"2025-09-17T13:57:14.990Z"}
+{"context":"OrderService","level":"info","message":"WhatsApp message sent successfully for order 9b27b947-6d8a-4044-9a2e-069ea74b536f","timestamp":"2025-09-17T13:57:15.510Z"}
+{"context":"NestFactory","level":"info","message":"Starting Nest application...","timestamp":"2025-09-17T13:58:14.108Z"}
+{"context":"InstanceLoader","level":"info","message":"AppModule dependencies initialized","timestamp":"2025-09-17T13:58:14.124Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-09-17T13:58:14.124Z"}
+{"context":"InstanceLoader","level":"info","message":"HttpModule dependencies initialized","timestamp":"2025-09-17T13:58:14.125Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigHostModule dependencies initialized","timestamp":"2025-09-17T13:58:14.126Z"}
+{"context":"InstanceLoader","level":"info","message":"ServeStaticModule dependencies initialized","timestamp":"2025-09-17T13:58:14.127Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigModule dependencies initialized","timestamp":"2025-09-17T13:58:14.127Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigModule dependencies initialized","timestamp":"2025-09-17T13:58:14.127Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseCoreModule dependencies initialized","timestamp":"2025-09-17T13:58:14.158Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-09-17T13:58:14.164Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-09-17T13:58:14.164Z"}
+{"context":"InstanceLoader","level":"info","message":"MenuModule dependencies initialized","timestamp":"2025-09-17T13:58:14.165Z"}
+{"context":"InstanceLoader","level":"info","message":"OrderModule dependencies initialized","timestamp":"2025-09-17T13:58:14.165Z"}
+{"context":"RoutesResolver","level":"info","message":"MenuController {/menu}:","timestamp":"2025-09-17T13:58:14.172Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/menu, GET} route","timestamp":"2025-09-17T13:58:14.174Z"}
+{"context":"RoutesResolver","level":"info","message":"OrderController {/order}:","timestamp":"2025-09-17T13:58:14.175Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/order, POST} route","timestamp":"2025-09-17T13:58:14.176Z"}
+{"context":"NestApplication","level":"info","message":"Nest application successfully started","timestamp":"2025-09-17T13:58:14.178Z"}
+{"level":"info","message":"Application is running on: http://[::1]:3001","timestamp":"2025-09-17T13:58:14.183Z"}
+{"context":"OrderService","level":"info","message":"Order successfully saved with ID: 100f5669-3d52-4b3c-905c-872019b26ff1","timestamp":"2025-09-17T13:59:02.514Z"}
+{"context":"OrderService","level":"info","message":"Sending WhatsApp message for order 100f5669-3d52-4b3c-905c-872019b26ff1 to 6281268778159","timestamp":"2025-09-17T13:59:02.528Z"}
+{"context":"OrderService","level":"info","message":"WhatsApp message sent successfully for order 100f5669-3d52-4b3c-905c-872019b26ff1","timestamp":"2025-09-17T13:59:03.027Z"}
+{"context":"NestFactory","level":"info","message":"Starting Nest application...","timestamp":"2025-09-17T13:59:42.727Z"}
+{"context":"InstanceLoader","level":"info","message":"AppModule dependencies initialized","timestamp":"2025-09-17T13:59:42.744Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-09-17T13:59:42.744Z"}
+{"context":"InstanceLoader","level":"info","message":"HttpModule dependencies initialized","timestamp":"2025-09-17T13:59:42.745Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigHostModule dependencies initialized","timestamp":"2025-09-17T13:59:42.746Z"}
+{"context":"InstanceLoader","level":"info","message":"ServeStaticModule dependencies initialized","timestamp":"2025-09-17T13:59:42.746Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigModule dependencies initialized","timestamp":"2025-09-17T13:59:42.747Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigModule dependencies initialized","timestamp":"2025-09-17T13:59:42.747Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseCoreModule dependencies initialized","timestamp":"2025-09-17T13:59:42.777Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-09-17T13:59:42.783Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-09-17T13:59:42.783Z"}
+{"context":"InstanceLoader","level":"info","message":"MenuModule dependencies initialized","timestamp":"2025-09-17T13:59:42.784Z"}
+{"context":"InstanceLoader","level":"info","message":"OrderModule dependencies initialized","timestamp":"2025-09-17T13:59:42.784Z"}
+{"context":"RoutesResolver","level":"info","message":"MenuController {/menu}:","timestamp":"2025-09-17T13:59:42.789Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/menu, GET} route","timestamp":"2025-09-17T13:59:42.792Z"}
+{"context":"RoutesResolver","level":"info","message":"OrderController {/order}:","timestamp":"2025-09-17T13:59:42.792Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/order, POST} route","timestamp":"2025-09-17T13:59:42.793Z"}
+{"context":"NestApplication","level":"info","message":"Nest application successfully started","timestamp":"2025-09-17T13:59:42.796Z"}
+{"level":"info","message":"Application is running on: http://[::1]:3001","timestamp":"2025-09-17T13:59:42.801Z"}
