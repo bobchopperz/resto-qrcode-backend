@@ -5,6 +5,7 @@ import { MenuModule } from './menu/menu.module';
 import { OrderModule } from './order/order.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { join } from 'path';
     }),
     MenuModule,
     OrderModule,
+    UserModule, // Daftarkan UserModule di sini
   ],
   controllers: [],
   providers: [],
