@@ -7,10 +7,10 @@ async function bootstrap() {
   const logger = WinstonModule.createLogger(winstonConfig);
   const app = await NestFactory.create(AppModule, { logger });
 
-  // Aktifkan CORS untuk semua origin. Ini penting untuk interaksi dengan frontend.
+  // Kembali ke konfigurasi CORS sederhana
   app.enableCors();
 
-  await app.listen(3001); // allocate port 3001 agar tdk bentrok
+  await app.listen(3001);
   logger.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();

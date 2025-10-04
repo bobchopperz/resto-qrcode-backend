@@ -14,25 +14,20 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserDocument> {
-    // PENTING: Tambahkan hashing password di sini sebelum menyimpan
-    // const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-    const newUser = new this.userModel({
-      ...createUserDto,
-      // password: hashedPassword,
-    });
+    const newUser = new this.userModel(createUserDto);
     return newUser.save();
   }
 
-  async login(loginUserDto: LoginUserDto): Promise<{ access_token: string }> {
+  async login(loginUserDto: LoginUserDto): Promise<{ access_token: string }> { // Dikembalikan ke format objek
     const user = await this.findOneByUsername(loginUserDto.username);
 
-    // PENTING: Ganti perbandingan ini dengan bcrypt.compare saat hashing diimplementasikan
     if (user?.password !== loginUserDto.password) {
       throw new UnauthorizedException('Username atau password salah');
     }
 
-    const payload = { sub: user._id, username: user.username };
+    const payload = { sub: user._id, username: user.username, role: user.role };
     
+    // Kembalikan dalam bentuk objek
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
