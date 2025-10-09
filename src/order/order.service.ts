@@ -107,4 +107,16 @@ export class OrderService {
       throw error;
     }
   }
+
+  async findByMonth(year: number, month: number): Promise<Order[]> {
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 1);
+
+    return this.orderModel.find({
+      timestamp: {
+        $gte: startDate,
+        $lt: endDate,
+      },
+    }).exec();
+  }
 }
