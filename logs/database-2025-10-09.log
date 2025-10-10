@@ -350,3 +350,34 @@
 {"context":"RouterExplorer","level":"info","message":"Mapped {/user/profile, GET} route","timestamp":"2025-10-09T15:05:14.165Z"}
 {"context":"NestApplication","level":"info","message":"Nest application successfully started","timestamp":"2025-10-09T15:05:14.301Z"}
 {"level":"info","message":"Application is running on: http://[::1]:3001","timestamp":"2025-10-09T15:05:14.316Z"}
+{"context":"NestFactory","level":"info","message":"Starting Nest application...","timestamp":"2025-10-09T15:29:01.235Z"}
+{"context":"InstanceLoader","level":"info","message":"AppModule dependencies initialized","timestamp":"2025-10-09T15:29:01.246Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-10-09T15:29:01.247Z"}
+{"context":"InstanceLoader","level":"info","message":"PassportModule dependencies initialized","timestamp":"2025-10-09T15:29:01.247Z"}
+{"context":"InstanceLoader","level":"info","message":"HttpModule dependencies initialized","timestamp":"2025-10-09T15:29:01.248Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigHostModule dependencies initialized","timestamp":"2025-10-09T15:29:01.248Z"}
+{"context":"InstanceLoader","level":"info","message":"ServeStaticModule dependencies initialized","timestamp":"2025-10-09T15:29:01.249Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigModule dependencies initialized","timestamp":"2025-10-09T15:29:01.249Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigModule dependencies initialized","timestamp":"2025-10-09T15:29:01.250Z"}
+{"context":"InstanceLoader","level":"info","message":"JwtModule dependencies initialized","timestamp":"2025-10-09T15:29:01.266Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseCoreModule dependencies initialized","timestamp":"2025-10-09T15:29:01.277Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-10-09T15:29:01.281Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-10-09T15:29:01.281Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-10-09T15:29:01.282Z"}
+{"context":"InstanceLoader","level":"info","message":"MenuModule dependencies initialized","timestamp":"2025-10-09T15:29:01.282Z"}
+{"context":"InstanceLoader","level":"info","message":"OrderModule dependencies initialized","timestamp":"2025-10-09T15:29:01.283Z"}
+{"context":"InstanceLoader","level":"info","message":"UserModule dependencies initialized","timestamp":"2025-10-09T15:29:01.283Z"}
+{"context":"RoutesResolver","level":"info","message":"MenuController {/menu}:","timestamp":"2025-10-09T15:29:01.287Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/menu, GET} route","timestamp":"2025-10-09T15:29:01.289Z"}
+{"context":"RoutesResolver","level":"info","message":"OrderController {/order}:","timestamp":"2025-10-09T15:29:01.289Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/order, POST} route","timestamp":"2025-10-09T15:29:01.290Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/order/:year/:month, GET} route","timestamp":"2025-10-09T15:29:01.290Z"}
+{"context":"RoutesResolver","level":"info","message":"UserController {/user}:","timestamp":"2025-10-09T15:29:01.290Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user/register, POST} route","timestamp":"2025-10-09T15:29:01.291Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user/login, POST} route","timestamp":"2025-10-09T15:29:01.291Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user/profile, GET} route","timestamp":"2025-10-09T15:29:01.292Z"}
+{"context":"NestApplication","level":"info","message":"Nest application successfully started","timestamp":"2025-10-09T15:29:01.386Z"}
+{"level":"info","message":"Application is running on: http://[::1]:3001","timestamp":"2025-10-09T15:29:01.391Z"}
+{"context":"OrderService","level":"info","message":"Order successfully saved with ID: 58f525e5-f49a-474a-b5ba-bb4057fd0a28","timestamp":"2025-10-09T16:53:24.229Z"}
+{"context":"OrderService","level":"info","message":"Sending WhatsApp message for order 58f525e5-f49a-474a-b5ba-bb4057fd0a28 to 6281268778159","timestamp":"2025-10-09T16:53:24.240Z"}
+{"context":"OrderService","level":"info","message":"WhatsApp message sent successfully for order 58f525e5-f49a-474a-b5ba-bb4057fd0a28","timestamp":"2025-10-09T16:53:26.382Z"}

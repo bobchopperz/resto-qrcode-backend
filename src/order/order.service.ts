@@ -39,7 +39,7 @@ export class OrderService {
 
         return {
           ...item,
-          nama_menu: menuItem.nama, // Mengambil nama dari data menu
+          nama_menu: menuItem.name, // Mengambil nama dari data menu
           menu_id: menuItem._id,
           modal: menuItem.modal,
           subtotal_modal: subtotalModal,
