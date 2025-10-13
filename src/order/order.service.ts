@@ -6,6 +6,7 @@ import { Order, OrderDocument } from './order.schema';
 import { MenuService } from '../menu/menu.service';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class OrderService {
@@ -15,6 +16,7 @@ export class OrderService {
     @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
     private readonly menuService: MenuService,
     private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
   ) {}
 
   async create(createOrderDto: CreateOrderDto): Promise<OrderDocument> {
@@ -89,7 +91,8 @@ export class OrderService {
         this.logger.log(`Sending WhatsApp message for order ${savedOrder._id} to ${payload.number}`);
         
         await firstValueFrom(
-          this.httpService.post('http://localhost:3002/send-message', payload),
+          // this.httpService.post('http://localhost:3002/send-message', payload), // nan lamo
+          this.httpService.post(this.configService.get<string>('WHATSAPP_GATEWAY')+'/kirim-pesan', payload),
         );
 
         this.logger.log(`WhatsApp message sent successfully for order ${savedOrder._id}`);
