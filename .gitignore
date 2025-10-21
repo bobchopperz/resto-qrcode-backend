@@ -36,5 +36,3 @@ Thumbs.db
 *.tmp
 *.swp
 
-# File tes database sementara
-test-db.js
