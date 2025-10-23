@@ -79,6 +79,7 @@ export class OrderService {
             year: 'numeric',
             hour: 'numeric',
             minute: 'numeric',
+            timeZone: 'Asia/Jakarta'
         });
 
         const message = `Halo Kak ${savedOrder.nama_pelanggan}, rincian order Kakak ${tanggalOrder} sebagai berikut :\n\n${rincianMenu}\n\nTotal Order: Rp ${savedOrder.total_kesuluruhan.toLocaleString('id-ID')}`;
