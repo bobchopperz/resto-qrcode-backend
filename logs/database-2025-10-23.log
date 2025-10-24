@@ -243,3 +243,6 @@
 {"context":"RouterExplorer","level":"info","message":"Mapped {/user/:id, DELETE} route","timestamp":"2025-10-23T12:23:28.790Z"}
 {"context":"NestApplication","level":"info","message":"Nest application successfully started","timestamp":"2025-10-23T12:23:28.800Z"}
 {"level":"info","message":"Application is running on: http://[::1]:3001","timestamp":"2025-10-23T12:23:28.811Z"}
+{"context":"OrderService","level":"info","message":"Order successfully saved with ID: d4877991-bc96-4b35-a9ba-7037b9f434bf","timestamp":"2025-10-23T12:48:39.812Z"}
+{"context":"OrderService","level":"info","message":"Sending WhatsApp message for order d4877991-bc96-4b35-a9ba-7037b9f434bf to 6285278232885","timestamp":"2025-10-23T12:48:39.834Z"}
+{"context":"OrderService","level":"info","message":"WhatsApp message sent successfully for order d4877991-bc96-4b35-a9ba-7037b9f434bf","timestamp":"2025-10-23T12:48:40.919Z"}

@@ -13,6 +13,10 @@ export class UpdateMenuDto {
   @IsOptional()
   modal?: number;
 
+  @IsNumber()
+  @IsOptional()
+  stok?: number;
+
   @IsString()
   @IsOptional()
   description?: string;

@@ -14,6 +14,9 @@ export class Menu {
     @Prop({ required: true })
     modal: number;
 
+    @Prop({ required: true })
+    stok: number;
+
     @Prop()
     description: string;
 

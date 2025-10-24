@@ -11,6 +11,9 @@ export class CreateMenuDto {
   @IsNumber()
   modal: number;
 
+  @IsNumber()
+  stok: number;
+
   @IsString()
   @IsOptional()
   description?: string;

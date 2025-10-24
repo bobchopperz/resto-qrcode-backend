@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -32,6 +32,17 @@ export class OrderService {
             `Menu dengan ID ${item.menu_id} tidak ditemukan.`,
           );
         }
+
+        // Cek stok
+        if (menuItem.stok < item.kuantiti) {
+          throw new BadRequestException(
+            `Stok untuk menu "${menuItem.name}" tidak mencukupi. Sisa stok: ${menuItem.stok}`,
+          );
+        }
+
+        // Kurangi stok
+        menuItem.stok -= item.kuantiti;
+        await menuItem.save(); // Simpan perubahan stok ke database
 
         const subtotalModal = menuItem.modal * item.kuantiti;
         const subtotalMargin = item.sub_total - subtotalModal;
