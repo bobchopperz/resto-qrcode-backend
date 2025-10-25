@@ -14,26 +14,27 @@ export class StokService {
   ) {}
 
   async create(createStokDto: CreateStokDto): Promise<StokDocument> {
-    const { menu_id, kuantiti, modal, harga_jual, tanggal_restok } = createStokDto;
+    const { menu_id, kuantiti } = createStokDto;
 
     const menu = await this.menuModel.findById(menu_id);
     if (!menu) {
       throw new NotFoundException(`Menu dengan ID ${menu_id} tidak ditemukan.`);
     }
 
+    // 1. Update kuantiti secara inkremental
     menu.stok += kuantiti;
     await menu.save();
 
+    // 2. Buat riwayat stok baru
     const createdStok = new this.stokModel({
-      menu_id: menu._id,
-      kuantiti,
-      modal,
-      harga_jual,
-      tanggal_restok: new Date(tanggal_restok),
+        ...createStokDto,
+        tanggal_restok: new Date(createStokDto.tanggal_restok),
     });
-
     const savedStok = await createdStok.save();
-    await this.updateMenuFromLatestStok(menu_id);
+    
+    // 3. Update harga & modal dari data terbaru
+    await this.updateMenuPriceAndModalFromLatestStok(menu_id);
+    
     return savedStok;
   }
 
@@ -52,17 +53,19 @@ export class StokService {
       throw new NotFoundException(`Menu terkait dengan ID ${stokToUpdate.menu_id} tidak ditemukan.`);
     }
 
+    // 1. Hitung selisih dan update kuantiti menu
     const kuantitiLama = stokToUpdate.kuantiti;
     const kuantitiBaru = updateStokDto.kuantiti !== undefined ? updateStokDto.kuantiti : kuantitiLama;
     const selisihKuantiti = kuantitiBaru - kuantitiLama;
-
     menu.stok += selisihKuantiti;
     await menu.save();
 
+    // 2. Update data riwayat stok
     Object.assign(stokToUpdate, updateStokDto);
     const updatedStok = await stokToUpdate.save();
 
-    await this.updateMenuFromLatestStok(menu._id.toString());
+    // 3. Update harga & modal dari data terbaru
+    await this.updateMenuPriceAndModalFromLatestStok(menu._id.toString());
 
     return updatedStok;
   }
@@ -75,33 +78,37 @@ export class StokService {
 
     const menu = await this.menuModel.findById(stokToDelete.menu_id);
     if (menu) {
+      // 1. Kurangi kuantiti di menu
       menu.stok -= stokToDelete.kuantiti;
       await menu.save();
     }
 
+    // 2. Hapus riwayat stok
     const deletedStok = await this.stokModel.findByIdAndDelete(id);
 
     if (menu) {
-      await this.updateMenuFromLatestStok(menu._id.toString());
+      // 3. Update harga & modal dari data terbaru yang tersisa
+      await this.updateMenuPriceAndModalFromLatestStok(menu._id.toString());
     }
 
     return deletedStok;
   }
 
-  private async updateMenuFromLatestStok(menuId: string): Promise<void> {
+  private async updateMenuPriceAndModalFromLatestStok(menuId: string): Promise<void> {
     const latestStokEntry = await this.stokModel
       .findOne({ menu_id: menuId })
       .sort({ tanggal_restok: -1 });
 
     const menu = await this.menuModel.findById(menuId);
-    if (!menu) return; // Menu mungkin sudah terhapus, jadi hentikan
+    if (!menu) return;
 
     if (latestStokEntry) {
       menu.price = latestStokEntry.harga_jual;
       menu.modal = latestStokEntry.modal;
     } else {
-      // Jika tidak ada riwayat stok tersisa, mungkin kita set ke 0 atau biarkan
-      // Untuk saat ini, kita biarkan saja agar tidak kehilangan data harga terakhir
+      // Jika tidak ada riwayat stok tersisa, set ke 0 agar tidak ada data usang
+      menu.price = 0;
+      menu.modal = 0;
     }
 
     await menu.save();
