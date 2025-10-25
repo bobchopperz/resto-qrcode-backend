@@ -6,6 +6,7 @@ import { OrderModule } from './order/order.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { UserModule } from './user/user.module';
+import { StokModule } from './stok/stok.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { UserModule } from './user/user.module';
     }),
     MenuModule,
     OrderModule,
-    UserModule, // Daftarkan UserModule di sini
+    UserModule,
+    StokModule, // Daftarkan StokModule di sini
   ],
   controllers: [],
   providers: [],

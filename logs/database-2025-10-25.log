@@ -1,0 +1,39 @@
+{"context":"NestFactory","level":"info","message":"Starting Nest application...","timestamp":"2025-10-25T07:05:50.826Z"}
+{"context":"InstanceLoader","level":"info","message":"AppModule dependencies initialized","timestamp":"2025-10-25T07:05:50.853Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-10-25T07:05:50.855Z"}
+{"context":"InstanceLoader","level":"info","message":"PassportModule dependencies initialized","timestamp":"2025-10-25T07:05:50.857Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigHostModule dependencies initialized","timestamp":"2025-10-25T07:05:50.858Z"}
+{"context":"InstanceLoader","level":"info","message":"HttpModule dependencies initialized","timestamp":"2025-10-25T07:05:50.860Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigModule dependencies initialized","timestamp":"2025-10-25T07:05:50.863Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigModule dependencies initialized","timestamp":"2025-10-25T07:05:50.864Z"}
+{"context":"InstanceLoader","level":"info","message":"ServeStaticModule dependencies initialized","timestamp":"2025-10-25T07:05:50.865Z"}
+{"context":"InstanceLoader","level":"info","message":"JwtModule dependencies initialized","timestamp":"2025-10-25T07:05:50.901Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseCoreModule dependencies initialized","timestamp":"2025-10-25T07:05:50.945Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-10-25T07:05:50.947Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-10-25T07:05:50.947Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-10-25T07:05:50.948Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-10-25T07:05:50.948Z"}
+{"context":"InstanceLoader","level":"info","message":"StokModule dependencies initialized","timestamp":"2025-10-25T07:05:50.950Z"}
+{"context":"InstanceLoader","level":"info","message":"OrderModule dependencies initialized","timestamp":"2025-10-25T07:05:50.951Z"}
+{"context":"InstanceLoader","level":"info","message":"MenuModule dependencies initialized","timestamp":"2025-10-25T07:05:50.952Z"}
+{"context":"InstanceLoader","level":"info","message":"UserModule dependencies initialized","timestamp":"2025-10-25T07:05:50.952Z"}
+{"context":"RoutesResolver","level":"info","message":"MenuController {/menu}:","timestamp":"2025-10-25T07:05:50.962Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/menu, POST} route","timestamp":"2025-10-25T07:05:50.967Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/menu, GET} route","timestamp":"2025-10-25T07:05:50.968Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/menu/:id, PUT} route","timestamp":"2025-10-25T07:05:50.970Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/menu/:id, DELETE} route","timestamp":"2025-10-25T07:05:50.971Z"}
+{"context":"RoutesResolver","level":"info","message":"OrderController {/order}:","timestamp":"2025-10-25T07:05:50.972Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/order, POST} route","timestamp":"2025-10-25T07:05:50.973Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/order/:year/:month, GET} route","timestamp":"2025-10-25T07:05:50.974Z"}
+{"context":"RoutesResolver","level":"info","message":"UserController {/user}:","timestamp":"2025-10-25T07:05:50.975Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user/register, POST} route","timestamp":"2025-10-25T07:05:50.976Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user/login, POST} route","timestamp":"2025-10-25T07:05:50.977Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user/profile, GET} route","timestamp":"2025-10-25T07:05:50.978Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user, GET} route","timestamp":"2025-10-25T07:05:50.979Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user/:id, GET} route","timestamp":"2025-10-25T07:05:50.980Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user/:id, PUT} route","timestamp":"2025-10-25T07:05:50.980Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user/:id, DELETE} route","timestamp":"2025-10-25T07:05:50.981Z"}
+{"context":"RoutesResolver","level":"info","message":"StokController {/stok}:","timestamp":"2025-10-25T07:05:50.982Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/stok, POST} route","timestamp":"2025-10-25T07:05:50.982Z"}
+{"context":"NestApplication","level":"info","message":"Nest application successfully started","timestamp":"2025-10-25T07:05:50.989Z"}
+{"level":"info","message":"Application is running on: http://[::1]:3001","timestamp":"2025-10-25T07:05:51.000Z"}
