@@ -1,6 +1,7 @@
-import { Controller, Post, Body, ValidationPipe } from '@nestjs/common';
+import { Controller, Post, Body, ValidationPipe, Get, Patch, Param, Delete } from '@nestjs/common';
 import { StokService } from './stok.service';
 import { CreateStokDto } from './dto/create-stok.dto';
+import { UpdateStokDto } from './dto/update-stok.dto';
 
 @Controller('stok')
 export class StokController {
@@ -9,5 +10,20 @@ export class StokController {
   @Post()
   create(@Body(new ValidationPipe()) createStokDto: CreateStokDto) {
     return this.stokService.create(createStokDto);
+  }
+
+  @Get()
+  findAll() {
+    return this.stokService.findAll();
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body(new ValidationPipe()) updateStokDto: UpdateStokDto) {
+    return this.stokService.update(id, updateStokDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.stokService.remove(id);
   }
 }
