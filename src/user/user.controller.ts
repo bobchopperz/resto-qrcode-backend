@@ -14,12 +14,6 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  @HttpCode(HttpStatus.OK)
-  @Post('login')
-  login(@Body() loginUserDto: LoginUserDto): Promise<{ access_token: string }> {
-    return this.userService.login(loginUserDto);
-  }
-
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
