@@ -18,6 +18,9 @@ class OrderItem {
   @Prop({ required: true })
   sub_total: number;
 
+  @Prop({ type: Map, of: String, required: false })
+  pilihan_opsi: Map<string, string>;
+
   // --- Field yang Diperkaya ---
   @Prop({ required: true })
   modal: number; // Harga modal per item

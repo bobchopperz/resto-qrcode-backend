@@ -41,11 +41,11 @@ export class MenuService {
   }
 
   async findAll(): Promise<Menu[]> {
-    return this.menuModel.find().exec();
+    return this.menuModel.find().populate('opsi').exec();
   }
 
   async findById(id: string): Promise<MenuDocument> {
-    return this.menuModel.findById(id).exec();
+    return this.menuModel.findById(id).populate('opsi').exec();
   }
 
   async remove(id: string): Promise<MenuDocument> {

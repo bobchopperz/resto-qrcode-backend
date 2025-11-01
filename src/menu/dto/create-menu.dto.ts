@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsOptional, IsNotEmpty } from 'class-validator';
+import { IsString, IsNumber, IsOptional, IsNotEmpty, IsArray, IsMongoId } from 'class-validator';
 
 export class CreateMenuDto {
   @IsString()
@@ -17,4 +17,9 @@ export class CreateMenuDto {
   @IsString()
   @IsOptional()
   description?: string;
+
+  @IsArray()
+  @IsOptional()
+  @IsMongoId({ each: true })
+  opsi?: string[];
 }

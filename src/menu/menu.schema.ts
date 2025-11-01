@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import * as mongoose from 'mongoose';
+import { OpsiMenu } from '../opsi-menu/schemas/opsi-menu.schema';
 
 export type MenuDocument = Menu & Document;
 
@@ -22,6 +24,9 @@ export class Menu {
 
     @Prop()
     imageUrl: string;
+
+    @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'OpsiMenu' }], default: [] })
+    opsi: OpsiMenu[];
 }
 
 export const MenuSchema = SchemaFactory.createForClass(Menu);
