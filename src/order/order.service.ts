@@ -33,16 +33,14 @@ export class OrderService {
           );
         }
 
-        // Cek stok
         if (menuItem.stok < item.kuantiti) {
           throw new BadRequestException(
             `Stok untuk menu "${menuItem.name}" tidak mencukupi. Sisa stok: ${menuItem.stok}`,
           );
         }
 
-        // Kurangi stok
         menuItem.stok -= item.kuantiti;
-        await menuItem.save(); // Simpan perubahan stok ke database
+        await menuItem.save();
 
         const subtotalModal = menuItem.modal * item.kuantiti;
         const subtotalMargin = item.sub_total - subtotalModal;
@@ -52,7 +50,7 @@ export class OrderService {
 
         return {
           ...item,
-          nama_menu: menuItem.name, // Mengambil nama dari data menu
+          nama_menu: menuItem.name,
           menu_id: menuItem._id,
           modal: menuItem.modal,
           subtotal_modal: subtotalModal,
@@ -78,11 +76,19 @@ export class OrderService {
       const savedOrder = await createdOrder.save();
       this.logger.log(`Order successfully saved with ID: ${savedOrder._id}`);
 
-      // --- Integrasi Baileys ---
       try {
+        // --- PERBAIKAN DI SINI ---
         const rincianMenu = savedOrder.orders
-          .map(orderItem => `- ${orderItem.name} (x${orderItem.kuantiti})`)
-          .join('\n');
+          .map(orderItem => {
+            let detailItem = `- ${orderItem.name} (x${orderItem.kuantiti})`;
+            if (orderItem.pilihan_opsi && Object.keys(orderItem.pilihan_opsi).length > 0) {
+              const detailOpsi = Object.values(orderItem.pilihan_opsi).join(', ');
+              detailItem += `\n  (${detailOpsi})`; // Tambahkan opsi di bawah nama menu
+            }
+            return detailItem;
+          })
+          .join('\n\n');
+        // --------------------------
 
         const tanggalOrder = savedOrder.timestamp.toLocaleDateString('id-ID',{
             day: 'numeric',
@@ -103,7 +109,6 @@ export class OrderService {
         this.logger.log(`Sending WhatsApp message for order ${savedOrder._id} to ${payload.number}`);
         
         await firstValueFrom(
-          // this.httpService.post('http://localhost:3002/send-message', payload), // nan lamo
           this.httpService.post(this.configService.get<string>('WHATSAPP_GATEWAY')+'/kirim-pesan', payload),
         );
 
@@ -114,7 +119,6 @@ export class OrderService {
           baileysError.stack,
         );
       }
-      // --- Akhir Integrasi Baileys ---
 
       return savedOrder;
     } catch (error) {
