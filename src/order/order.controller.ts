@@ -19,18 +19,4 @@ export class OrderController {
     ) {
         return this.orderService.findByMonth(+year, +month);
     }
-
-    @UseGuards(JwtAuthGuard)
-    @Delete(':id')
-    @HttpCode(HttpStatus.NO_CONTENT)
-    async remove(@Param('id') id: string): Promise<void> {
-        return this.orderService.remove(id);
-    }
-
-    @UseGuards(JwtAuthGuard)
-    @Post(':id/resend-whatsapp')
-    @HttpCode(HttpStatus.OK)
-    async resendWhatsapp(@Param('id') id: string) {
-        return this.orderService.resendWhatsappMessage(id);
-    }
 }
