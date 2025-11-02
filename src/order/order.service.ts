@@ -24,12 +24,10 @@ export class OrderService {
       const rincianMenu = order.orders
         .map(orderItem => {
           let detailItem = `- ${orderItem.name} (x${orderItem.kuantiti})`;
-          // --- PERBAIKAN DI SINI ---
           if (orderItem.pilihan_opsi && Object.keys(orderItem.pilihan_opsi).length > 0) {
             const detailOpsi = Object.values(orderItem.pilihan_opsi).join(', ');
             detailItem += `\n  - ${detailOpsi}`;
           }
-          // -------------------------
           return detailItem;
         })
         .join('\n\n');
@@ -62,7 +60,7 @@ export class OrderService {
         `Failed to send WhatsApp message for order ${order._id}`,
         baileysError.stack,
       );
-      // Jangan throw error di sini agar proses utama tidak gagal jika WA gagal
+      throw new Error('Failed to send WhatsApp message');
     }
   }
 
@@ -150,7 +148,9 @@ export class OrderService {
 
     for (const item of order.orders) {
       try {
-        const menuItem = await this.menuService.findById(item.menu_id);
+        // --- PERBAIKAN DI SINI ---
+        const menuItem = await this.menuService.findById(String(item.menu_id));
+        // -------------------------
         if (menuItem) {
           menuItem.stok += item.kuantiti;
           await menuItem.save();
