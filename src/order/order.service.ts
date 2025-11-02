@@ -19,6 +19,53 @@ export class OrderService {
     private readonly configService: ConfigService,
   ) {}
 
+  private async sendWhatsapp(order: OrderDocument) {
+    try {
+      const rincianMenu = order.orders
+        .map(orderItem => {
+          let detailItem = `- ${orderItem.name} (x${orderItem.kuantiti})`;
+          // --- PERBAIKAN DI SINI ---
+          if (orderItem.pilihan_opsi && Object.keys(orderItem.pilihan_opsi).length > 0) {
+            const detailOpsi = Object.values(orderItem.pilihan_opsi).join(', ');
+            detailItem += `\n  - ${detailOpsi}`;
+          }
+          // -------------------------
+          return detailItem;
+        })
+        .join('\n\n');
+
+      const tanggalOrder = order.timestamp.toLocaleDateString('id-ID',{
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          timeZone: 'Asia/Jakarta'
+      });
+
+      const message = `Halo Kak ${order.nama_pelanggan}, rincian order Kakak ${tanggalOrder} sebagai berikut :\n\n${rincianMenu}\n\nTotal Order: Rp ${order.total_kesuluruhan.toLocaleString('id-ID')}`;
+
+      const payload = {
+        number: order.no_wa_pelanggan,
+        message: message,
+      };
+
+      this.logger.log(`Sending WhatsApp message for order ${order._id} to ${payload.number}`);
+      
+      await firstValueFrom(
+        this.httpService.post(this.configService.get<string>('WHATSAPP_GATEWAY')+'/kirim-pesan', payload),
+      );
+
+      this.logger.log(`WhatsApp message sent successfully for order ${order._id}`);
+    } catch (baileysError) {
+      this.logger.error(
+        `Failed to send WhatsApp message for order ${order._id}`,
+        baileysError.stack,
+      );
+      // Jangan throw error di sini agar proses utama tidak gagal jika WA gagal
+    }
+  }
+
   async create(createOrderDto: CreateOrderDto): Promise<OrderDocument> {
     let totalModalKeseluruhan = 0;
     let totalMarginKeseluruhan = 0;
@@ -75,51 +122,7 @@ export class OrderService {
     try {
       const savedOrder = await createdOrder.save();
       this.logger.log(`Order successfully saved with ID: ${savedOrder._id}`);
-
-      try {
-        // --- PERBAIKAN DI SINI ---
-        const rincianMenu = savedOrder.orders
-          .map(orderItem => {
-            let detailItem = `- ${orderItem.name} (x${orderItem.kuantiti})`;
-            if (orderItem.pilihan_opsi && Object.keys(orderItem.pilihan_opsi).length > 0) {
-              const detailOpsi = Object.values(orderItem.pilihan_opsi).join(', ');
-              detailItem += `\n  (${detailOpsi})`; // Tambahkan opsi di bawah nama menu
-            }
-            return detailItem;
-          })
-          .join('\n\n');
-        // --------------------------
-
-        const tanggalOrder = savedOrder.timestamp.toLocaleDateString('id-ID',{
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-            timeZone: 'Asia/Jakarta'
-        });
-
-        const message = `Halo Kak ${savedOrder.nama_pelanggan}, rincian order Kakak ${tanggalOrder} sebagai berikut :\n\n${rincianMenu}\n\nTotal Order: Rp ${savedOrder.total_kesuluruhan.toLocaleString('id-ID')}`;
-
-        const payload = {
-          number: savedOrder.no_wa_pelanggan,
-          message: message,
-        };
-
-        this.logger.log(`Sending WhatsApp message for order ${savedOrder._id} to ${payload.number}`);
-        
-        await firstValueFrom(
-          this.httpService.post(this.configService.get<string>('WHATSAPP_GATEWAY')+'/kirim-pesan', payload),
-        );
-
-        this.logger.log(`WhatsApp message sent successfully for order ${savedOrder._id}`);
-      } catch (baileysError) {
-        this.logger.error(
-          `Failed to send WhatsApp message for order ${savedOrder._id}`,
-          baileysError.stack,
-        );
-      }
-
+      await this.sendWhatsapp(savedOrder);
       return savedOrder;
     } catch (error) {
       this.logger.error('Failed to save order to database', error.stack, { data: orderData });
@@ -137,5 +140,36 @@ export class OrderService {
         $lt: endDate,
       },
     }).exec();
+  }
+
+  async remove(id: string): Promise<OrderDocument> {
+    const order = await this.orderModel.findById(id);
+    if (!order) {
+      throw new NotFoundException(`Order with ID "${id}" not found`);
+    }
+
+    for (const item of order.orders) {
+      try {
+        const menuItem = await this.menuService.findById(item.menu_id);
+        if (menuItem) {
+          menuItem.stok += item.kuantiti;
+          await menuItem.save();
+        }
+      } catch (error) {
+        this.logger.error(`Failed to restock menu item ${item.menu_id} for deleted order ${id}`, error.stack);
+      }
+    }
+
+    await this.orderModel.findByIdAndDelete(id).exec();
+    return order;
+  }
+
+  async resendWhatsappMessage(id: string): Promise<{ status: string }> {
+    const order = await this.orderModel.findById(id).exec();
+    if (!order) {
+      throw new NotFoundException(`Order with ID "${id}" not found`);
+    }
+    await this.sendWhatsapp(order);
+    return { status: 'Message sent' };
   }
 }
