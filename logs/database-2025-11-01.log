@@ -147,3 +147,103 @@
 {"context":"RouterExplorer","level":"info","message":"Mapped {/opsi-menu/:id, DELETE} route","timestamp":"2025-11-01T14:52:45.411Z"}
 {"context":"NestApplication","level":"info","message":"Nest application successfully started","timestamp":"2025-11-01T14:52:45.415Z"}
 {"level":"info","message":"Application is running on: http://[::1]:3001","timestamp":"2025-11-01T14:52:45.420Z"}
+{"context":"NestFactory","level":"info","message":"Starting Nest application...","timestamp":"2025-11-01T15:30:43.922Z"}
+{"context":"InstanceLoader","level":"info","message":"AppModule dependencies initialized","timestamp":"2025-11-01T15:30:43.935Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-11-01T15:30:43.935Z"}
+{"context":"InstanceLoader","level":"info","message":"PassportModule dependencies initialized","timestamp":"2025-11-01T15:30:43.936Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigHostModule dependencies initialized","timestamp":"2025-11-01T15:30:43.937Z"}
+{"context":"InstanceLoader","level":"info","message":"HttpModule dependencies initialized","timestamp":"2025-11-01T15:30:43.937Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigModule dependencies initialized","timestamp":"2025-11-01T15:30:43.938Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigModule dependencies initialized","timestamp":"2025-11-01T15:30:43.939Z"}
+{"context":"InstanceLoader","level":"info","message":"ServeStaticModule dependencies initialized","timestamp":"2025-11-01T15:30:43.940Z"}
+{"context":"InstanceLoader","level":"info","message":"JwtModule dependencies initialized","timestamp":"2025-11-01T15:30:43.958Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseCoreModule dependencies initialized","timestamp":"2025-11-01T15:30:43.974Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-11-01T15:30:43.975Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-11-01T15:30:43.975Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-11-01T15:30:43.975Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-11-01T15:30:43.976Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-11-01T15:30:43.976Z"}
+{"context":"InstanceLoader","level":"info","message":"StokModule dependencies initialized","timestamp":"2025-11-01T15:30:43.978Z"}
+{"context":"InstanceLoader","level":"info","message":"OrderModule dependencies initialized","timestamp":"2025-11-01T15:30:43.978Z"}
+{"context":"InstanceLoader","level":"info","message":"MenuModule dependencies initialized","timestamp":"2025-11-01T15:30:43.979Z"}
+{"context":"InstanceLoader","level":"info","message":"OpsiMenuModule dependencies initialized","timestamp":"2025-11-01T15:30:43.979Z"}
+{"context":"InstanceLoader","level":"info","message":"UserModule dependencies initialized","timestamp":"2025-11-01T15:30:43.979Z"}
+{"context":"RoutesResolver","level":"info","message":"MenuController {/menu}:","timestamp":"2025-11-01T15:30:43.984Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/menu, POST} route","timestamp":"2025-11-01T15:30:43.987Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/menu, GET} route","timestamp":"2025-11-01T15:30:43.987Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/menu/:id, PUT} route","timestamp":"2025-11-01T15:30:43.988Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/menu/:id, DELETE} route","timestamp":"2025-11-01T15:30:43.989Z"}
+{"context":"RoutesResolver","level":"info","message":"OrderController {/order}:","timestamp":"2025-11-01T15:30:43.989Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/order, POST} route","timestamp":"2025-11-01T15:30:43.990Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/order/:year/:month, GET} route","timestamp":"2025-11-01T15:30:43.990Z"}
+{"context":"RoutesResolver","level":"info","message":"UserController {/user}:","timestamp":"2025-11-01T15:30:43.991Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user/register, POST} route","timestamp":"2025-11-01T15:30:43.992Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user/login, POST} route","timestamp":"2025-11-01T15:30:43.992Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user/profile, GET} route","timestamp":"2025-11-01T15:30:43.993Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user, GET} route","timestamp":"2025-11-01T15:30:43.994Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user/:id, GET} route","timestamp":"2025-11-01T15:30:43.995Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user/:id, PUT} route","timestamp":"2025-11-01T15:30:43.995Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user/:id, DELETE} route","timestamp":"2025-11-01T15:30:43.996Z"}
+{"context":"RoutesResolver","level":"info","message":"StokController {/stok}:","timestamp":"2025-11-01T15:30:43.996Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/stok, POST} route","timestamp":"2025-11-01T15:30:43.997Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/stok, GET} route","timestamp":"2025-11-01T15:30:43.997Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/stok/:id, PUT} route","timestamp":"2025-11-01T15:30:43.997Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/stok/:id, DELETE} route","timestamp":"2025-11-01T15:30:43.998Z"}
+{"context":"RoutesResolver","level":"info","message":"OpsiMenuController {/opsi-menu}:","timestamp":"2025-11-01T15:30:43.998Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/opsi-menu, POST} route","timestamp":"2025-11-01T15:30:43.999Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/opsi-menu, GET} route","timestamp":"2025-11-01T15:30:43.999Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/opsi-menu/:id, GET} route","timestamp":"2025-11-01T15:30:44.000Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/opsi-menu/:id, PUT} route","timestamp":"2025-11-01T15:30:44.000Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/opsi-menu/:id, DELETE} route","timestamp":"2025-11-01T15:30:44.001Z"}
+{"context":"NestApplication","level":"info","message":"Nest application successfully started","timestamp":"2025-11-01T15:30:44.005Z"}
+{"level":"info","message":"Application is running on: http://[::1]:3001","timestamp":"2025-11-01T15:30:44.010Z"}
+{"context":"NestFactory","level":"info","message":"Starting Nest application...","timestamp":"2025-11-01T15:30:45.855Z"}
+{"context":"InstanceLoader","level":"info","message":"AppModule dependencies initialized","timestamp":"2025-11-01T15:30:45.868Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-11-01T15:30:45.868Z"}
+{"context":"InstanceLoader","level":"info","message":"PassportModule dependencies initialized","timestamp":"2025-11-01T15:30:45.869Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigHostModule dependencies initialized","timestamp":"2025-11-01T15:30:45.870Z"}
+{"context":"InstanceLoader","level":"info","message":"HttpModule dependencies initialized","timestamp":"2025-11-01T15:30:45.870Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigModule dependencies initialized","timestamp":"2025-11-01T15:30:45.871Z"}
+{"context":"InstanceLoader","level":"info","message":"ConfigModule dependencies initialized","timestamp":"2025-11-01T15:30:45.871Z"}
+{"context":"InstanceLoader","level":"info","message":"ServeStaticModule dependencies initialized","timestamp":"2025-11-01T15:30:45.872Z"}
+{"context":"InstanceLoader","level":"info","message":"JwtModule dependencies initialized","timestamp":"2025-11-01T15:30:45.888Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseCoreModule dependencies initialized","timestamp":"2025-11-01T15:30:45.904Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-11-01T15:30:45.904Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-11-01T15:30:45.904Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-11-01T15:30:45.905Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-11-01T15:30:45.905Z"}
+{"context":"InstanceLoader","level":"info","message":"MongooseModule dependencies initialized","timestamp":"2025-11-01T15:30:45.905Z"}
+{"context":"InstanceLoader","level":"info","message":"StokModule dependencies initialized","timestamp":"2025-11-01T15:30:45.907Z"}
+{"context":"InstanceLoader","level":"info","message":"OrderModule dependencies initialized","timestamp":"2025-11-01T15:30:45.907Z"}
+{"context":"InstanceLoader","level":"info","message":"MenuModule dependencies initialized","timestamp":"2025-11-01T15:30:45.908Z"}
+{"context":"InstanceLoader","level":"info","message":"OpsiMenuModule dependencies initialized","timestamp":"2025-11-01T15:30:45.908Z"}
+{"context":"InstanceLoader","level":"info","message":"UserModule dependencies initialized","timestamp":"2025-11-01T15:30:45.908Z"}
+{"context":"RoutesResolver","level":"info","message":"MenuController {/menu}:","timestamp":"2025-11-01T15:30:45.912Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/menu, POST} route","timestamp":"2025-11-01T15:30:45.915Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/menu, GET} route","timestamp":"2025-11-01T15:30:45.916Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/menu/:id, PUT} route","timestamp":"2025-11-01T15:30:45.917Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/menu/:id, DELETE} route","timestamp":"2025-11-01T15:30:45.917Z"}
+{"context":"RoutesResolver","level":"info","message":"OrderController {/order}:","timestamp":"2025-11-01T15:30:45.918Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/order, POST} route","timestamp":"2025-11-01T15:30:45.918Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/order/:year/:month, GET} route","timestamp":"2025-11-01T15:30:45.919Z"}
+{"context":"RoutesResolver","level":"info","message":"UserController {/user}:","timestamp":"2025-11-01T15:30:45.919Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user/register, POST} route","timestamp":"2025-11-01T15:30:45.920Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user/login, POST} route","timestamp":"2025-11-01T15:30:45.920Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user/profile, GET} route","timestamp":"2025-11-01T15:30:45.921Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user, GET} route","timestamp":"2025-11-01T15:30:45.922Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user/:id, GET} route","timestamp":"2025-11-01T15:30:45.922Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user/:id, PUT} route","timestamp":"2025-11-01T15:30:45.923Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/user/:id, DELETE} route","timestamp":"2025-11-01T15:30:45.923Z"}
+{"context":"RoutesResolver","level":"info","message":"StokController {/stok}:","timestamp":"2025-11-01T15:30:45.924Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/stok, POST} route","timestamp":"2025-11-01T15:30:45.924Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/stok, GET} route","timestamp":"2025-11-01T15:30:45.925Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/stok/:id, PUT} route","timestamp":"2025-11-01T15:30:45.925Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/stok/:id, DELETE} route","timestamp":"2025-11-01T15:30:45.926Z"}
+{"context":"RoutesResolver","level":"info","message":"OpsiMenuController {/opsi-menu}:","timestamp":"2025-11-01T15:30:45.926Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/opsi-menu, POST} route","timestamp":"2025-11-01T15:30:45.927Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/opsi-menu, GET} route","timestamp":"2025-11-01T15:30:45.927Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/opsi-menu/:id, GET} route","timestamp":"2025-11-01T15:30:45.928Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/opsi-menu/:id, PUT} route","timestamp":"2025-11-01T15:30:45.928Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/opsi-menu/:id, DELETE} route","timestamp":"2025-11-01T15:30:45.928Z"}
+{"context":"NestApplication","level":"info","message":"Nest application successfully started","timestamp":"2025-11-01T15:30:45.931Z"}
+{"level":"info","message":"Application is running on: http://[::1]:3001","timestamp":"2025-11-01T15:30:45.936Z"}

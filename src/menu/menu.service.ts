@@ -76,9 +76,18 @@ export class MenuService {
       throw new NotFoundException(`Menu with ID "${id}" not found`);
     }
 
+    // --- PERBAIKAN DI SINI ---
+    // Transformasi manual untuk field 'opsi'
+    if (updateMenuDto.opsi === '') {
+      updateMenuDto.opsi = [];
+    } else if (updateMenuDto.opsi && !Array.isArray(updateMenuDto.opsi)) {
+      // Jika ada tapi bukan array (misal, hanya satu item dipilih)
+      updateMenuDto.opsi = [updateMenuDto.opsi];
+    }
+    // ------------------------
+
     // Handle image update if a new file is provided
     if (imageFile) {
-      // Delete old image if it exists
       if (existingMenu.imageUrl) {
         const oldImagePath = path.join(process.cwd(), 'public', existingMenu.imageUrl);
         try {
@@ -88,7 +97,6 @@ export class MenuService {
         }
       }
 
-      // Save new image
       const newImageFileName = `${Date.now()}.jpg`;
       const newImagePath = path.join(
         process.cwd(),
