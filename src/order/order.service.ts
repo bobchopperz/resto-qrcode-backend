@@ -19,17 +19,17 @@ export class OrderService {
     private readonly configService: ConfigService,
   ) {}
 
+  // --- FUNGSI PENGIRIMAN WHATSAPP TERPUSAT ---
   private async sendWhatsapp(order: OrderDocument) {
     try {
       const rincianMenu = order.orders
         .map(orderItem => {
           let detailItem = `- ${orderItem.name} (x${orderItem.kuantiti})`;
-          // --- PERBAIKAN DI SINI ---
+          // Logika yang benar untuk membaca Map
           if (orderItem.pilihan_opsi && orderItem.pilihan_opsi.size > 0) {
             const detailOpsi = [...orderItem.pilihan_opsi.values()].join(', ');
             detailItem += `\n  - ${detailOpsi}`;
           }
-          // -------------------------
           return detailItem;
         })
         .join('\n\n');
@@ -62,7 +62,7 @@ export class OrderService {
         `Failed to send WhatsApp message for order ${order._id}`,
         baileysError.stack,
       );
-      // Jangan throw error di sini agar proses utama tidak gagal jika WA gagal
+      // Tidak melempar error agar proses utama tidak gagal
     }
   }
 
@@ -73,25 +73,17 @@ export class OrderService {
     const enrichedOrders = await Promise.all(
       createOrderDto.orders.map(async (item) => {
         const menuItem = await this.menuService.findById(item.menu_id);
-
         if (!menuItem) {
-          throw new NotFoundException(
-            `Menu dengan ID ${item.menu_id} tidak ditemukan.`,
-          );
+          throw new NotFoundException(`Menu dengan ID ${item.menu_id} tidak ditemukan.`);
         }
-
         if (menuItem.stok < item.kuantiti) {
-          throw new BadRequestException(
-            `Stok untuk menu "${menuItem.name}" tidak mencukupi. Sisa stok: ${menuItem.stok}`,
-          );
+          throw new BadRequestException(`Stok untuk menu "${menuItem.name}" tidak mencukupi. Sisa stok: ${menuItem.stok}`);
         }
-
         menuItem.stok -= item.kuantiti;
         await menuItem.save();
 
         const subtotalModal = menuItem.modal * item.kuantiti;
         const subtotalMargin = item.sub_total - subtotalModal;
-
         totalModalKeseluruhan += subtotalModal;
         totalMarginKeseluruhan += subtotalMargin;
 
@@ -122,6 +114,7 @@ export class OrderService {
     try {
       const savedOrder = await createdOrder.save();
       this.logger.log(`Order successfully saved with ID: ${savedOrder._id}`);
+      // Hanya ada SATU kali pemanggilan di sini
       await this.sendWhatsapp(savedOrder);
       return savedOrder;
     } catch (error) {
@@ -133,13 +126,7 @@ export class OrderService {
   async findByMonth(year: number, month: number): Promise<Order[]> {
     const startDate = new Date(year, month - 1, 1);
     const endDate = new Date(year, month, 1);
-
-    return this.orderModel.find({
-      timestamp: {
-        $gte: startDate,
-        $lt: endDate,
-      },
-    }).exec();
+    return this.orderModel.find({ timestamp: { $gte: startDate, $lt: endDate } }).exec();
   }
 
   async remove(id: string): Promise<OrderDocument> {
