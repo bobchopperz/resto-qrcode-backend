@@ -19,18 +19,17 @@ export class OrderService {
     private readonly configService: ConfigService,
   ) {}
 
+  // --- FUNGSI PENGIRIMAN WHATSAPP TERPUSAT ---
   private async sendWhatsapp(order: OrderDocument) {
     try {
       const rincianMenu = order.orders
         .map(orderItem => {
+          // Logika yang benar untuk Mongoose subdocuments
           let detailItem = `- ${orderItem.name} (x${orderItem.kuantiti})`;
-
-          // --- PERBAIKAN DEFINITIF: Gunakan metode Map() yang benar ---
           if (orderItem.pilihan_opsi && orderItem.pilihan_opsi.size > 0) {
             const detailOpsi = [...orderItem.pilihan_opsi.values()].join(', ');
             detailItem += `\n  - ${detailOpsi}`;
           }
-          // --------------------------------------------------------
           return detailItem;
         })
         .join('\n\n');
@@ -114,7 +113,11 @@ export class OrderService {
     try {
       const savedOrder = await createdOrder.save();
       this.logger.log(`Order successfully saved with ID: ${savedOrder._id}`);
+      
+      // --- HANYA ADA SATU PEMANGGILAN INI --- 
       await this.sendWhatsapp(savedOrder);
+      // --------------------------------------
+
       return savedOrder;
     } catch (error) {
       this.logger.error('Failed to save order to database', error.stack, { data: orderData });
