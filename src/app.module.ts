@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule as NestConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MenuModule } from './menu/menu.module';
 import { OrderModule } from './order/order.module';
@@ -8,17 +8,18 @@ import { join } from 'path';
 import { UserModule } from './user/user.module';
 import { StokModule } from './stok/stok.module';
 import { OpsiMenuModule } from './opsi-menu/opsi-menu.module';
+import { WhatsappConfigModule } from './whatsapp-config/whatsapp-config.module'; // Impor modul baru
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
+    NestConfigModule.forRoot({
       isGlobal: true,
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
     MongooseModule.forRootAsync({
-      imports: [ConfigModule],
+      imports: [NestConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         uri: configService.get<string>('MONGODB_URI'),
@@ -29,6 +30,7 @@ import { OpsiMenuModule } from './opsi-menu/opsi-menu.module';
     UserModule,
     StokModule,
     OpsiMenuModule,
+    WhatsappConfigModule, // Ganti ConfigModule dengan ini
   ],
   controllers: [],
   providers: [],
