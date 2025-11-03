@@ -16,5 +16,9 @@ export class CreateUserDto {
 
   @IsString()
   @IsOptional()
+  handphone?: string;
+
+  @IsString()
+  @IsOptional()
   role?: string; // Default role will be handled in service if not provided
 }

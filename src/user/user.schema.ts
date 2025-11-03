@@ -14,7 +14,10 @@ export class User {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ type: String, default: 'user' })
+  @Prop()
+  handphone: string;
+
+  @Prop({ type: String, default: 'staff' })
   role: string;
 }
 
