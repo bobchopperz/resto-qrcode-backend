@@ -19,15 +19,18 @@ export class OrderService {
     private readonly configService: ConfigService,
   ) {}
 
-  // --- FUNGSI PENGIRIMAN WHATSAPP TERPUSAT ---
   private async sendWhatsapp(order: OrderDocument) {
     try {
       const rincianMenu = order.orders
         .map(orderItem => {
-          let detailItem = `- ${orderItem.name} (x${orderItem.kuantiti})`;
-          // Logika yang benar untuk membaca Map
-          if (orderItem.pilihan_opsi && orderItem.pilihan_opsi.size > 0) {
-            const detailOpsi = [...orderItem.pilihan_opsi.values()].join(', ');
+          // --- PERBAIKAN DEFINITIF: Ubah Dokumen Mongoose ke Objek Biasa ---
+          const plainItem = orderItem.toObject();
+
+          let detailItem = `- ${plainItem.name} (x${plainItem.kuantiti})`;
+
+          // Sekarang 'plainItem.pilihan_opsi' adalah objek biasa, bukan Map
+          if (plainItem.pilihan_opsi && Object.keys(plainItem.pilihan_opsi).length > 0) {
+            const detailOpsi = Object.values(plainItem.pilihan_opsi).join(', ');
             detailItem += `\n  - ${detailOpsi}`;
           }
           return detailItem;
@@ -62,7 +65,6 @@ export class OrderService {
         `Failed to send WhatsApp message for order ${order._id}`,
         baileysError.stack,
       );
-      // Tidak melempar error agar proses utama tidak gagal
     }
   }
 
@@ -114,7 +116,6 @@ export class OrderService {
     try {
       const savedOrder = await createdOrder.save();
       this.logger.log(`Order successfully saved with ID: ${savedOrder._id}`);
-      // Hanya ada SATU kali pemanggilan di sini
       await this.sendWhatsapp(savedOrder);
       return savedOrder;
     } catch (error) {
