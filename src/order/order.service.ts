@@ -23,16 +23,14 @@ export class OrderService {
     try {
       const rincianMenu = order.orders
         .map(orderItem => {
-          // --- PERBAIKAN DEFINITIF: Ubah Dokumen Mongoose ke Objek Biasa ---
-          const plainItem = orderItem.toObject();
+          let detailItem = `- ${orderItem.name} (x${orderItem.kuantiti})`;
 
-          let detailItem = `- ${plainItem.name} (x${plainItem.kuantiti})`;
-
-          // Sekarang 'plainItem.pilihan_opsi' adalah objek biasa, bukan Map
-          if (plainItem.pilihan_opsi && Object.keys(plainItem.pilihan_opsi).length > 0) {
-            const detailOpsi = Object.values(plainItem.pilihan_opsi).join(', ');
+          // --- PERBAIKAN DEFINITIF: Gunakan metode Map() yang benar ---
+          if (orderItem.pilihan_opsi && orderItem.pilihan_opsi.size > 0) {
+            const detailOpsi = [...orderItem.pilihan_opsi.values()].join(', ');
             detailItem += `\n  - ${detailOpsi}`;
           }
+          // --------------------------------------------------------
           return detailItem;
         })
         .join('\n\n');
