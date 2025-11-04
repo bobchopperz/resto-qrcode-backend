@@ -45,6 +45,10 @@ export class UserService {
     return user;
   }
 
+  async findByRole(role: string): Promise<UserDocument[]> {
+    return this.userModel.find({ role }).exec();
+  }
+
   async update(id: string, updateUserDto: UpdateUserDto): Promise<UserDocument> {
     const existingUser = await this.userModel.findById(id).exec();
     if (!existingUser) {

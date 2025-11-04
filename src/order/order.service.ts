@@ -6,7 +6,10 @@ import { Order, OrderDocument } from './order.schema';
 import { MenuService } from '../menu/menu.service';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { ConfigService } from '@nestjs/config';
+import { ConfigService as NestConfigService } from '@nestjs/config'; // Alias NestJS ConfigService
+import { WhatsappConfigService } from '../whatsapp-config/whatsapp-config.service'; // Import WhatsappConfigService
+import { UserService } from '../user/user.service'; // Import UserService
+import { UserDocument } from '../user/user.schema'; // Import UserDocument
 
 @Injectable()
 export class OrderService {
@@ -16,15 +19,16 @@ export class OrderService {
     @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
     private readonly menuService: MenuService,
     private readonly httpService: HttpService,
-    private readonly configService: ConfigService,
+    private readonly nestConfigService: NestConfigService, // Gunakan alias
+    private readonly whatsappConfigService: WhatsappConfigService, // Inject WhatsappConfigService
+    private readonly userService: UserService, // Inject UserService
   ) {}
 
-  // --- FUNGSI PENGIRIMAN WHATSAPP TERPUSAT ---
-  private async sendWhatsapp(order: OrderDocument) {
+  // --- FUNGSI PENGIRIMAN WHATSAPP TERPUSAT --- (untuk pelanggan)
+  private async sendWhatsappToCustomer(order: OrderDocument) {
     try {
       const rincianMenu = order.orders
         .map(orderItem => {
-          // Logika yang benar untuk Mongoose subdocuments
           let detailItem = `- ${orderItem.name} (x${orderItem.kuantiti})`;
           if (orderItem.pilihan_opsi && orderItem.pilihan_opsi.size > 0) {
             const detailOpsi = [...orderItem.pilihan_opsi.values()].join(', ');
@@ -50,24 +54,87 @@ export class OrderService {
         message: message,
       };
 
-      this.logger.log(`Sending WhatsApp message for order ${order._id} to ${payload.number}`);
+      this.logger.log(`Sending WhatsApp message for order ${order._id} to customer ${payload.number}`);
       
       await firstValueFrom(
-        this.httpService.post(this.configService.get<string>('WHATSAPP_GATEWAY')+'/kirim-pesan', payload),
+        this.httpService.post(this.nestConfigService.get<string>('WHATSAPP_GATEWAY')+'/kirim-pesan', payload),
       );
 
-      this.logger.log(`WhatsApp message sent successfully for order ${order._id}`);
+      this.logger.log(`WhatsApp message sent successfully to customer for order ${order._id}`);
     } catch (baileysError) {
       this.logger.error(
-        `Failed to send WhatsApp message for order ${order._id}`,
+        `Failed to send WhatsApp message to customer for order ${order._id}`,
         baileysError.stack,
+      );
+    }
+  }
+
+  // --- FUNGSI FORWARD KE KITCHEN ---
+  private async forwardToKitchen(order: OrderDocument) {
+    try {
+      const whatsappConfig = await this.whatsappConfigService.getWhatsappForwardingConfig();
+
+      if (!whatsappConfig['kitchen-forwarding']) {
+        this.logger.log('Kitchen forwarding is disabled. Skipping.');
+        return;
+      }
+
+      const kitchenUsers = await this.userService.findByRole('kitchen');
+      if (kitchenUsers.length === 0) {
+        this.logger.warn('No users with role kitchen found for kitchen forwarding.');
+        return;
+      }
+
+      const rincianMenu = order.orders
+        .map(orderItem => {
+          let detailItem = `- ${orderItem.name} (x${orderItem.kuantiti})`;
+          if (orderItem.pilihan_opsi && orderItem.pilihan_opsi.size > 0) {
+            const detailOpsi = [...orderItem.pilihan_opsi.values()].join(', ');
+            detailItem += `\n  - ${detailOpsi}`;
+          }
+          return detailItem;
+        })
+        .join('\n\n');
+
+      const tanggalOrder = order.timestamp.toLocaleDateString('id-ID',{
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          timeZone: 'Asia/Jakarta'
+      });
+
+      const message = `Halo Kitchen, order\n\n atas nama: ${order.nama_pelanggan}\nTanggal Order: ${tanggalOrder}\n\nRincian Pesanan:\n${rincianMenu}\n\nTMohon segera diproses.`;
+
+      for (const kitchenUser of kitchenUsers) {
+        if (kitchenUser.handphone) {
+          const payload = {
+            number: kitchenUser.handphone,
+            message: message,
+          };
+
+          this.logger.log(`Sending WhatsApp message for order ${order._id} to kitchen user ${kitchenUser.username} (${kitchenUser.handphone})`);
+          await firstValueFrom(
+            this.httpService.post(this.nestConfigService.get<string>('WHATSAPP_GATEWAY')+'/kirim-pesan', payload),
+          );
+          this.logger.log(`WhatsApp message sent successfully to kitchen user ${kitchenUser.username}`);
+        } else {
+          this.logger.warn(`Kitchen user ${kitchenUser.username} has no handphone number. Skipping.`);
+        }
+      }
+
+    } catch (error) {
+      this.logger.error(
+        `Failed to forward order ${order._id} to kitchen`,
+        error.stack,
       );
     }
   }
 
   async create(createOrderDto: CreateOrderDto): Promise<OrderDocument> {
     let totalModalKeseluruhan = 0;
-    let totalMarginKeseluruhan = 0;
+    let totalMarginKesuluruhan = 0;
 
     const enrichedOrders = await Promise.all(
       createOrderDto.orders.map(async (item) => {
@@ -84,7 +151,7 @@ export class OrderService {
         const subtotalModal = menuItem.modal * item.kuantiti;
         const subtotalMargin = item.sub_total - subtotalModal;
         totalModalKeseluruhan += subtotalModal;
-        totalMarginKeseluruhan += subtotalMargin;
+        totalMarginKesuluruhan += subtotalMargin;
 
         return {
           ...item,
@@ -102,7 +169,7 @@ export class OrderService {
       orders: enrichedOrders,
       timestamp: new Date(createOrderDto.timestamp['$date']),
       total_modal_keseluruhan: totalModalKeseluruhan,
-      total_margin_keseluruhan: totalMarginKeseluruhan,
+      total_margin_keseluruhan: totalMarginKesuluruhan,
     };
 
     const createdOrder = new this.orderModel({
@@ -114,9 +181,11 @@ export class OrderService {
       const savedOrder = await createdOrder.save();
       this.logger.log(`Order successfully saved with ID: ${savedOrder._id}`);
       
-      // --- HANYA ADA SATU PEMANGGILAN INI --- 
-      await this.sendWhatsapp(savedOrder);
-      // --------------------------------------
+      // Mengirim WhatsApp ke pelanggan
+      await this.sendWhatsappToCustomer(savedOrder);
+
+      // Meneruskan order ke kitchen
+      await this.forwardToKitchen(savedOrder);
 
       return savedOrder;
     } catch (error) {
@@ -158,7 +227,8 @@ export class OrderService {
     if (!order) {
       throw new NotFoundException(`Order with ID "${id}" not found`);
     }
-    await this.sendWhatsapp(order);
+    // Mengirim WhatsApp ke pelanggan
+    await this.sendWhatsappToCustomer(order);
     return { status: 'Message sent' };
   }
 }
