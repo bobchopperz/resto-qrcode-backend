@@ -105,7 +105,7 @@ export class OrderService {
           timeZone: 'Asia/Jakarta'
       });
 
-      const message = `Halo Kitchen, order\n\n atas nama: ${order.nama_pelanggan}\nTanggal Order: ${tanggalOrder}\n\nRincian Pesanan:\n${rincianMenu}\n\nTMohon segera diproses.`;
+      const message = `Halo Kitchen, order\n\n atas nama: ${order.nama_pelanggan}\nTanggal Order: ${tanggalOrder}\n\nRincian Pesanan:\n${rincianMenu}\n\nMohon segera diproses.`;
 
       for (const kitchenUser of kitchenUsers) {
         if (kitchenUser.handphone) {
