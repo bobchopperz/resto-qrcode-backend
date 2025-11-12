@@ -1,4 +1,22 @@
-import { IsString, IsArray, ArrayNotEmpty } from 'class-validator';
+import {
+  IsString,
+  IsArray,
+  ArrayNotEmpty,
+  ValidateNested,
+  IsNumberString,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+
+export class ListOpsiDto {
+  @IsString()
+  readonly pilihan: string;
+
+  @IsNumberString()
+  readonly modal: string;
+
+  @IsNumberString()
+  readonly harga_jual: string;
+}
 
 export class CreateOpsiMenuDto {
   @IsString()
@@ -6,6 +24,7 @@ export class CreateOpsiMenuDto {
 
   @IsArray()
   @ArrayNotEmpty()
-  @IsString({ each: true })
-  readonly list_opsi: string[];
+  @ValidateNested({ each: true })
+  @Type(() => ListOpsiDto)
+  readonly list_opsi: ListOpsiDto[];
 }

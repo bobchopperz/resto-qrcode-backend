@@ -8,8 +8,16 @@ export class OpsiMenu {
   @Prop({ required: true })
   nama_opsi: string;
 
-  @Prop([String])
-  list_opsi: string[];
+  @Prop({
+    type: [
+      {
+        pilihan: String,
+        modal: String,
+        harga_jual: String,
+      },
+    ],
+  })
+  list_opsi: { pilihan: string; modal: string; harga_jual: string }[];
 }
 
 export const OpsiMenuSchema = SchemaFactory.createForClass(OpsiMenu);
