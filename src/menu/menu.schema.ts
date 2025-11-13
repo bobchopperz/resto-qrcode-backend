@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { OpsiMenu } from '../opsi-menu/schemas/opsi-menu.schema';
+import { OpsiMenu } from '../opsi-menu/opsi-menu.schema';
 
 export type MenuDocument = Menu & Document;
 

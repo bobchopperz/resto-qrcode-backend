@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateOpsiMenuDto } from './dto/create-opsi-menu.dto';
 import { UpdateOpsiMenuDto } from './dto/update-opsi-menu.dto';
-import { OpsiMenu, OpsiMenuDocument } from './schemas/opsi-menu.schema';
+import { OpsiMenu, OpsiMenuDocument } from './opsi-menu.schema';
 
 @Injectable()
 export class OpsiMenuService {

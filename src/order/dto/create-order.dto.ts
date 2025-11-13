@@ -1,30 +1,52 @@
-import { IsString, IsNumber, IsArray, ValidateNested, IsObject, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsNumber,
+  IsArray,
+  ValidateNested,
+  IsMongoId,
+  Min,
+  IsOptional,
+  ArrayNotEmpty,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
-class PilihanOpsiDto {
-    [key: string]: string;
+// DTO untuk opsi yang dipilih oleh user
+class OpsiTerpilihDto {
+  @IsString()
+  nama_opsi: string;
+
+  @IsString()
+  pilihan: string;
 }
 
-class OrderItemDto {
-  readonly menu_id: string;
-  readonly kuantiti: number;
-  readonly sub_total: number;
+// DTO untuk setiap item yang dikirim dari frontend
+class CreateOrderItemDto {
+  @IsMongoId()
+  menuId: string;
 
-  @IsObject()
-  @IsOptional()
-  readonly pilihan_opsi?: PilihanOpsiDto;
-}
-
-export class CreateOrderDto {
-  readonly _id: string;
-  readonly nama_pelanggan: string;
-  readonly no_wa_pelanggan: string;
+  @IsNumber()
+  @Min(1)
+  jumlah: number;
 
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => OrderItemDto)
-  readonly orders: OrderItemDto[];
-  
-  readonly total_kesuluruhan: number;
-  readonly timestamp: { $date: string };
+  @Type(() => OpsiTerpilihDto)
+  @IsOptional()
+  opsi_terpilih?: OpsiTerpilihDto[];
+}
+
+// DTO utama yang diterima oleh controller
+export class CreateOrderDto {
+  @IsString()
+  nama_pelanggan: string;
+
+  @IsString()
+  @IsOptional()
+  no_wa_pelanggan?: string;
+
+  @IsArray()
+  @ArrayNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => CreateOrderItemDto)
+  items: CreateOrderItemDto[];
 }
