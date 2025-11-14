@@ -7,6 +7,7 @@ import { UpdateMenuDto } from './dto/update-menu.dto';
 import * as sharp from 'sharp';
 import * as path from 'path';
 import * as fs from 'fs/promises';
+import { OpsiMenu } from 'src/opsi-menu/opsi-menu.schema';
 
 @Injectable()
 export class MenuService {
@@ -42,6 +43,30 @@ export class MenuService {
 
   async findAll(): Promise<Menu[]> {
     return this.menuModel.find().populate('opsi').exec();
+  }
+
+  async findAllForOrder(): Promise<any[]> {
+    const menus = await this.menuModel
+      .find()
+      .select('-modal')
+      .populate('opsi')
+      .lean() // Convert to plain JavaScript objects
+      .exec();
+
+    // Manually remove 'modal' from the nested 'list_opsi'
+    menus.forEach((menu) => {
+      if (menu.opsi && Array.isArray(menu.opsi)) {
+        menu.opsi.forEach((opsiItem: OpsiMenu) => {
+          if (opsiItem.list_opsi && Array.isArray(opsiItem.list_opsi)) {
+            opsiItem.list_opsi.forEach((listOpsiItem) => {
+              delete (listOpsiItem as any).modal;
+            });
+          }
+        });
+      }
+    });
+
+    return menus;
   }
 
   async findById(id: string): Promise<MenuDocument> {
@@ -89,11 +114,18 @@ export class MenuService {
     // Handle image update if a new file is provided
     if (imageFile) {
       if (existingMenu.imageUrl) {
-        const oldImagePath = path.join(process.cwd(), 'public', existingMenu.imageUrl);
+        const oldImagePath = path.join(
+          process.cwd(),
+          'public',
+          existingMenu.imageUrl,
+        );
         try {
           await fs.unlink(oldImagePath);
         } catch (error) {
-          console.warn(`Could not delete old image file: ${oldImagePath}`, error.message);
+          console.warn(
+            `Could not delete old image file: ${oldImagePath}`,
+            error.message,
+          );
         }
       }
 

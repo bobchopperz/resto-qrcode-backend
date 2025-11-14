@@ -51,6 +51,11 @@ export class MenuController {
     return this.menuService.findAll();
   }
 
+  @Get('order')
+  findAllForOrder() {
+    return this.menuService.findAllForOrder();
+  }
+
   @Put(':id')
   @UseInterceptors(FileInterceptor('imageFile'))
   update(
