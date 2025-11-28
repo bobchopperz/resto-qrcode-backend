@@ -1,29 +1,31 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Put,
-  Body,
-  UploadedFile,
-  UseInterceptors,
-  ParseFilePipe,
-  MaxFileSizeValidator,
-  FileTypeValidator,
-  Delete,
-  Param,
-  HttpCode,
-  HttpStatus,
+    Controller,
+    Get,
+    Post,
+    Put,
+    Body,
+    UploadedFile,
+    UseInterceptors,
+    ParseFilePipe,
+    MaxFileSizeValidator,
+    FileTypeValidator,
+    Delete,
+    Param,
+    HttpCode,
+    HttpStatus, UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MenuService } from './menu.service';
 import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
 import { Express } from 'express';
+import { JwtAuthGuard} from "../user/jwt-auth.guard";
 
 @Controller('menu')
 export class MenuController {
   constructor(private readonly menuService: MenuService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor('imageFile'))
   create(
@@ -46,16 +48,20 @@ export class MenuController {
     return this.menuService.create(dtoWithNumbers, imageFile);
   }
 
+  // yg ini untuk dashboard
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.menuService.findAll();
   }
 
+  // ini untuk halaman order
   @Get('order')
   findAllForOrder() {
     return this.menuService.findAllForOrder();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   @UseInterceptors(FileInterceptor('imageFile'))
   update(
@@ -82,6 +88,7 @@ export class MenuController {
     return this.menuService.update(id, dtoWithNumbers, imageFile);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {

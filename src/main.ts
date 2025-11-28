@@ -10,10 +10,21 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
-  // Konfigurasi CORS
-  app.enableCors();
+  // Konfigurasi CORS opened
+  // app.enableCors();
 
-  await app.listen(3001);
+  // konfigurasi CORS whitelist
+  const clientUrl = configService.get<string>('CLIENT_URL');
+  const port = configService.get<string>('PORT');
+
+  app.enableCors({
+      origin: `${clientUrl}`,
+      methods: 'GET,POST,PUT,DELETE',
+      credentials: true,
+      allowedHeaders: 'Content-Type, Authorization',
+  });
+
+  await app.listen(port);
   logger.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();

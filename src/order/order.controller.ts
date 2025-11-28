@@ -12,6 +12,7 @@ export class OrderController {
         return this.orderService.create(createOrderDto);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get(':year/:month')
     async findByMonth(
         @Param('year') year: number,

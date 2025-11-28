@@ -14,11 +14,13 @@ export class OpsiMenuController {
     return this.opsiMenuService.create(createOpsiMenuDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.opsiMenuService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findById(@Param('id') id: string) {
     return this.opsiMenuService.findById(id);
