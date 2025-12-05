@@ -93,7 +93,7 @@ export class UserService {
       throw new UnauthorizedException('Username atau password salah');
     }
 
-    const payload = { sub: user._id, username: user.username, role: user.role };
+    const payload = { sub: user._id, username: user.username, role: user.role, name: user.name };
     
     return {
       access_token: await this.jwtService.signAsync(payload),
