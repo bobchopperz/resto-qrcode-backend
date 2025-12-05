@@ -26,13 +26,103 @@ export class OrderService {
     ) {}
 
     private async sendWhatsappToCustomer(order: OrderDocument) {
-        // Implementasi tidak diubah
-        // ...
+
+        try {
+            const rincianMenu = order.items.map(orderItem => {
+                let detailItem = `· ${orderItem.nama_menu} : ${orderItem.jumlah} porsi`;
+                if (orderItem.opsi_terpilih && orderItem.opsi_terpilih.length > 0) {
+                    const detailOpsi = orderItem.opsi_terpilih.map(opsi => `${opsi.nama_opsi} : ${opsi.pilihan}, total harga : ${orderItem.jumlah * opsi.harga_jual}`).join(`\n· `);
+                    detailItem += `\n· ${detailOpsi} \n`;
+                }
+                return detailItem;
+            }).join('\n');
+
+            const tanggalOrder = order.timestamp.toLocaleDateString('id-ID',{
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                timeZone: 'Asia/Jakarta',
+            });
+
+            const message = `Halo Kak ${order.nama_pelanggan}, rincian order Kakak ${tanggalOrder} sebagai berikut : \n\n${rincianMenu} \n\n Total Order : Rp ${order.total_modal_keseluruhan.toLocaleString('id-ID')} \n\n Mohon ditunggu :) `;
+
+            const payload = {
+                number: order.no_wa_pelanggan,
+                message: message,
+            };
+
+            this.logger.log(`sending Whatsapp order to ${payload.number} `);
+
+            await firstValueFrom(
+              this.httpService.post(this.nestConfigService.get<string>('WHATSAPP_GATEWAY')+'/kirim-pesan', payload),
+            );
+
+            this.logger.log(`sending Whatsapp order to customer is success`);
+
+        } catch (Error) {
+            console.log(Error);
+        }
     }
 
     private async forwardToKitchen(order: OrderDocument) {
-        // Implementasi tidak diubah
-        // ...
+
+        try{
+            const whatsappconfig = await this.whatsappConfigService.getWhatsappForwardingConfig();
+
+            if (!whatsappconfig['kitchen-forwarding']){
+                this.logger.log('kitchen-forwarding is not active');
+                return;
+            }
+
+            const kitchenUsers = await this.userService.findByRole('kitchen');
+            if (kitchenUsers.length === 0) {
+                this.logger.log('no users with kitchen role');
+                return;
+            }
+
+            const rincianMenu = order.items.map(orderItem => {
+                let detailItem = `· ${orderItem.nama_menu} : ${orderItem.jumlah} porsi`;
+                if (orderItem.opsi_terpilih && orderItem.opsi_terpilih.length > 0) {
+                    const detailOpsi = orderItem.opsi_terpilih.map(opsi => `${opsi.nama_opsi} : ${opsi.pilihan}`).join(`\n· `);
+                    detailItem += `\n· ${detailOpsi} \n`;
+                }
+                return detailItem;
+            }).join('\n');
+
+            const tanggalOrder = order.timestamp.toLocaleDateString('id-ID',{
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                timeZone: 'Asia/Jakarta',
+            });
+
+            for (const kitchenUser of kitchenUsers) {
+                if (kitchenUser.handphone) {
+
+                    const message = `Halo Kitchen ${kitchenUser.name}, ada orderan atas nama : ${order.nama_pelanggan}, tanggal ${tanggalOrder}\n\n Rincian Pesanan :\n\n${rincianMenu}\n\nMohon segera diproses.`;
+                    const payload = {
+                        number: kitchenUser.handphone,
+                        message: message,
+                    };
+
+                    this.logger.log(`Sending WhatsApp message for order ${order._id} to kitchen user ${kitchenUser.username} (${kitchenUser.handphone})`);
+                    await firstValueFrom(
+                        this.httpService.post(this.nestConfigService.get<string>('WHATSAPP_GATEWAY')+'/kirim-pesan', payload),
+                    );
+                    this.logger.log(`WhatsApp message sent successfully to kitchen user ${kitchenUser.username}`);
+                } else {
+                    this.logger.warn(`Kitchen user ${kitchenUser.username} has no handphone number. Skipping.`);
+                }
+            }
+
+
+        } catch (Error) {
+            console.log(Error);
+        }
     }
 
     async create(createOrderDto: CreateOrderDto): Promise<OrderDocument> {
@@ -109,18 +199,16 @@ export class OrderService {
             total_jual_keseluruhan,
             total_modal_keseluruhan,
             total_margin_keseluruhan,
+            timestamp: new Date(), // <-- TAMBAHKAN BARIS INI
         });
 
         try {
             const savedOrder = await newOrder.save();
 
-            console.log('isi orderan : ');
-            console.log(newOrder.total_margin_keseluruhan);
-
             this.logger.log(`Order successfully saved with ID: ${savedOrder._id}`);
 
-            // await this.sendWhatsappToCustomer(savedOrder);
-            // await this.forwardToKitchen(savedOrder);
+            await this.sendWhatsappToCustomer(savedOrder);
+            await this.forwardToKitchen(savedOrder);
 
             return savedOrder;
         } catch (error) {

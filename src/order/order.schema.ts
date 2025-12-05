@@ -85,6 +85,9 @@ export class Order {
   // Dihitung backend: Penjumlahan semua `subtotal_margin`
   @Prop({ required: true })
   total_margin_keseluruhan: number;
+
+  @Prop({ type: Date, required: true })
+  timestamp: Date;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);
