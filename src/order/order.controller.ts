@@ -20,4 +20,12 @@ export class OrderController {
     ) {
         return this.orderService.findByMonth(+year, +month);
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete(':id')
+    @HttpCode(HttpStatus.OK)
+    async remove(@Param('id') id: string) {
+        await this.orderService.remove(id);
+        return { message: 'Order successfully deleted' };
+    }
 }
