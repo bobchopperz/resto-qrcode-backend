@@ -125,6 +125,65 @@ export class OrderService {
         }
     }
 
+    private async forwardToWaiter(order: OrderDocument) {
+
+        try{
+            const whatsappconfig = await this.whatsappConfigService.getWhatsappForwardingConfig();
+
+            if (!whatsappconfig['waiter-forwarding']){
+                this.logger.log('waiter-forwarding is not active');
+                return;
+            }
+
+            const waiterUsers = await this.userService.findByRole('waiter');
+            if (waiterUsers.length === 0) {
+                this.logger.log('no users with waiter role');
+                return;
+            }
+
+            const rincianMenu = order.items.map(orderItem => {
+                let detailItem = `· ${orderItem.nama_menu} : ${orderItem.jumlah} porsi`;
+                if (orderItem.opsi_terpilih && orderItem.opsi_terpilih.length > 0) {
+                    const detailOpsi = orderItem.opsi_terpilih.map(opsi => `${opsi.nama_opsi} : ${opsi.pilihan}`).join(`\n· `);
+                    detailItem += `\n· ${detailOpsi} \n`;
+                }
+                return detailItem;
+            }).join('\n');
+
+            const tanggalOrder = order.timestamp.toLocaleDateString('id-ID',{
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                timeZone: 'Asia/Jakarta',
+            });
+
+            for (const waiterUser of waiterUsers) {
+                if (waiterUser.handphone) {
+
+                    const message = `Halo Kitchen ${waiterUser.name}, ada orderan atas nama : ${order.nama_pelanggan}, tanggal ${tanggalOrder}\n\n Rincian Pesanan :\n\n${rincianMenu}\n\nMohon segera diproses.`;
+                    const payload = {
+                        number: waiterUser.handphone,
+                        message: message,
+                    };
+
+                    this.logger.log(`Sending WhatsApp message for order ${order._id} to waiter user ${waiterUser.username} (${waiterUser.handphone})`);
+                    await firstValueFrom(
+                        this.httpService.post(this.nestConfigService.get<string>('WHATSAPP_GATEWAY')+'/kirim-pesan', payload),
+                    );
+                    this.logger.log(`WhatsApp message sent successfully to waiter user ${waiterUser.username}`);
+                } else {
+                    this.logger.warn(`Waiter user ${waiterUser.username} has no handphone number. Skipping.`);
+                }
+            }
+
+
+        } catch (Error) {
+            console.log(Error);
+        }
+    }
+
     async create(createOrderDto: CreateOrderDto): Promise<OrderDocument> {
         let total_jual_keseluruhan = 0;
         let total_modal_keseluruhan = 0;
