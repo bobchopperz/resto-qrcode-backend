@@ -61,7 +61,7 @@ export class OrderService {
             this.logger.log(`sending Whatsapp order to ${payload.number} `);
 
             await firstValueFrom(
-              this.httpService.post(this.nestConfigService.get<string>('WHATSAPP_GATEWAY')+'/kirim-pesan', payload),
+                this.httpService.post(this.nestConfigService.get<string>('WHATSAPP_GATEWAY')+'/kirim-pesan', payload),
             );
 
             this.logger.log(`sending Whatsapp order to customer is success`);
@@ -329,6 +329,7 @@ export class OrderService {
         const newOrder = new this.orderModel({
             nama_pelanggan: createOrderDto.nama_pelanggan,
             no_wa_pelanggan: createOrderDto.no_wa_pelanggan,
+            nomor_meja: createOrderDto.nomor_meja,
             items: processedItems,
             total_jual_keseluruhan,
             total_modal_keseluruhan,

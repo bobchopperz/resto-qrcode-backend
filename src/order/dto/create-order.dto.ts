@@ -10,7 +10,6 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-// DTO untuk opsi yang dipilih oleh user
 class OpsiTerpilihDto {
   @IsString()
   nama_opsi: string;
@@ -19,7 +18,6 @@ class OpsiTerpilihDto {
   pilihan: string;
 }
 
-// DTO untuk setiap item yang dikirim dari frontend
 class CreateOrderItemDto {
   @IsMongoId()
   menuId: string;
@@ -35,7 +33,6 @@ class CreateOrderItemDto {
   opsi_terpilih?: OpsiTerpilihDto[];
 }
 
-// DTO utama yang diterima oleh controller
 export class CreateOrderDto {
   @IsString()
   nama_pelanggan: string;
@@ -43,6 +40,10 @@ export class CreateOrderDto {
   @IsString()
   @IsOptional()
   no_wa_pelanggan?: string;
+
+  @IsString()
+  @IsOptional()
+  nomor_meja?: string;
 
   @IsArray()
   @ArrayNotEmpty()
