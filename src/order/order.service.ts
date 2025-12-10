@@ -8,6 +8,11 @@ import { OpsiMenu, OpsiMenuDocument } from '../opsi-menu/opsi-menu.schema';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { ConfigService as NestConfigService } from '@nestjs/config';
+import * as sharp from 'sharp';
+import * as path from 'path';
+import * as fs from 'fs/promises';
+import { createReadStream } from 'fs';
+import * as FormData from 'form-data';
 import { WhatsappConfigService } from '../whatsapp-config/whatsapp-config.service';
 import { UserService } from '../user/user.service';
 
@@ -66,62 +71,132 @@ export class OrderService {
         }
     }
 
+    private generateReceiptSvg(order: OrderDocument): string {
+        const tanggalOrder = order.timestamp.toLocaleTimeString('id-ID', {
+            hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Jakarta'
+        });
+
+        const itemsText = order.items.flatMap(item => {
+            const mainItemLine = `${item.jumlah}x ${item.nama_menu}`;
+            const optionsLines = item.opsi_terpilih.map(o => `  • ${o.pilihan}`);
+            return [mainItemLine, ...optionsLines];
+        });
+
+        const headerLines = [
+            "** PESANAN BARU **",
+            `Customer: ${order.nama_pelanggan}`,
+            `Waktu: ${tanggalOrder}`
+        ];
+
+        const allLines = [...headerLines, '------------------------------', ...itemsText];
+
+        const lineHeight = 20;
+        const topPadding = 20;
+        const leftPadding = 20;
+        const svgHeight = allLines.length * lineHeight + (topPadding * 2);
+        const svgWidth = 320;
+
+        const textElements = allLines.map((line, index) => {
+            const y = topPadding + (index * lineHeight);
+            const isBold = line.startsWith('**');
+            const cleanLine = line.replace(/\*\*/g, '');
+            return `<text x="${leftPadding}" y="${y}" class="${isBold ? 'bold' : 'normal'}">${cleanLine}</text>`;
+        }).join('');
+
+        return `
+            <svg width="${svgWidth}" height="${svgHeight}" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100%" height="100%" fill="white"/>
+                <style>
+                    .normal { font: 14px 'Courier New', monospace; }
+                    .bold { font: bold 16px 'Courier New', monospace; text-anchor: middle; }
+                    text { fill: black; }
+                    /* Center bold text */
+                    .bold {
+                        transform: translateX(${svgWidth / 2}px);
+                    }
+                </style>
+                ${textElements}
+            </svg>
+        `;
+    }
+
+
     private async forwardToKitchen(order: OrderDocument) {
+        this.logger.log(`Starting forwardToKitchen process for order ${order._id}`);
+        const tempDir = path.join(process.cwd(), 'public', 'receipt-temp');
+        const imagePath = path.join(tempDir, `order-${order._id}.jpeg`);
+        let imageGenerated = false;
 
-        try{
+        try {
+            // 1. Cek apakah forwarding ke dapur aktif
             const whatsappconfig = await this.whatsappConfigService.getWhatsappForwardingConfig();
-
-            if (!whatsappconfig['kitchen-forwarding']){
-                this.logger.log('kitchen-forwarding is not active');
+            if (!whatsappconfig['kitchen-forwarding']) {
+                this.logger.log('kitchen-forwarding is not active. Skipping.');
                 return;
             }
 
+            // 2. Dapatkan data pengguna dengan peran 'kitchen'
             const kitchenUsers = await this.userService.findByRole('kitchen');
             if (kitchenUsers.length === 0) {
-                this.logger.log('no users with kitchen role');
+                this.logger.log('No users with kitchen role found. Skipping.');
                 return;
             }
 
-            const rincianMenu = order.items.map(orderItem => {
-                let detailItem = `· ${orderItem.nama_menu} : ${orderItem.jumlah} porsi`;
-                if (orderItem.opsi_terpilih && orderItem.opsi_terpilih.length > 0) {
-                    const detailOpsi = orderItem.opsi_terpilih.map(opsi => `${opsi.nama_opsi} : ${opsi.pilihan}`).join(`\n· `);
-                    detailItem += `\n· ${detailOpsi} \n`;
+            // 3. Buat SVG dari data pesanan
+            const receiptSvg = this.generateReceiptSvg(order);
+            const svgBuffer = Buffer.from(receiptSvg);
+
+            // 4. Pastikan direktori ada, lalu generate gambar (dengan penanganan EEXIST)
+            try {
+                // Opsi recursive: true akan membuat direktori dan tidak akan error jika direktori sudah ada.
+                await fs.mkdir(tempDir, { recursive: true });
+            } catch (error) {
+                // Jika errornya EEXIST, kemungkinan ada FILE (bukan folder) dengan nama yang sama.
+                if (error.code === 'EEXIST') {
+                    this.logger.warn(`Path ${tempDir} exists as a file. Deleting it to create a directory.`);
+                    await fs.unlink(tempDir); // Hapus file yang menghalangi
+                    await fs.mkdir(tempDir, { recursive: true }); // Coba lagi buat folder
+                } else {
+                    throw error; // Lemparkan kembali error lain yang tidak terduga
                 }
-                return detailItem;
-            }).join('\n');
+            }
+            await sharp(svgBuffer)
+                .jpeg({ quality: 90 })
+                .toFile(imagePath);
 
-            const tanggalOrder = order.timestamp.toLocaleDateString('id-ID',{
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric',
-                timeZone: 'Asia/Jakarta',
-            });
+            imageGenerated = true;
+            this.logger.log(`Generated kitchen order image at ${imagePath}`);
 
+            // 5. Kirim gambar ke setiap pengguna dapur
             for (const kitchenUser of kitchenUsers) {
                 if (kitchenUser.handphone) {
+                    const formData = new FormData();
+                    const tanggalOrder = order.timestamp.toLocaleTimeString('id-ID', {
+                        hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta'
+                    });
+                    formData.append('number', kitchenUser.handphone);
+                    formData.append('message', `Pesanan baru dari *${order.nama_pelanggan}* jam ${tanggalOrder}. Mohon segera diproses.`);
+                    formData.append('image', createReadStream(imagePath));
 
-                    const message = `Halo Kitchen ${kitchenUser.name}, ada orderan atas nama : ${order.nama_pelanggan}, tanggal ${tanggalOrder}\n\n Rincian Pesanan :\n\n${rincianMenu}\n\nMohon segera diproses.`;
-                    const payload = {
-                        number: kitchenUser.handphone,
-                        message: message,
-                    };
-
-                    this.logger.log(`Sending WhatsApp message for order ${order._id} to kitchen user ${kitchenUser.username} (${kitchenUser.handphone})`);
+                    this.logger.log(`Sending order image to kitchen user ${kitchenUser.username} (${kitchenUser.handphone})`);
                     await firstValueFrom(
-                        this.httpService.post(this.nestConfigService.get<string>('WHATSAPP_GATEWAY')+'/kirim-pesan', payload),
+                        this.httpService.post(this.nestConfigService.get<string>('WHATSAPP_GATEWAY') + '/kirim-media', formData, {
+                            headers: formData.getHeaders(),
+                        }),
                     );
-                    this.logger.log(`WhatsApp message sent successfully to kitchen user ${kitchenUser.username}`);
+                    this.logger.log(`Order image sent successfully to kitchen user ${kitchenUser.username}`);
                 } else {
                     this.logger.warn(`Kitchen user ${kitchenUser.username} has no handphone number. Skipping.`);
                 }
             }
-
-
-        } catch (Error) {
-            console.log(Error);
+        } catch (error) {
+            this.logger.error('Failed in forwardToKitchen process', error.stack, error.response?.data);
+        } finally {
+            // 6. Hapus file gambar sementara setelah selesai
+            if (imageGenerated) {
+                await fs.unlink(imagePath);
+                this.logger.log(`Removed temporary kitchen order image: ${imagePath}`);
+            }
         }
     }
 
@@ -162,7 +237,7 @@ export class OrderService {
             for (const waiterUser of waiterUsers) {
                 if (waiterUser.handphone) {
 
-                    const message = `Halo Kitchen ${waiterUser.name}, ada orderan atas nama : ${order.nama_pelanggan}, tanggal ${tanggalOrder}\n\n Rincian Pesanan :\n\n${rincianMenu}\n\nMohon segera diproses.`;
+                    const message = `Halo Waiter ${waiterUser.name}, ada orderan atas nama : ${order.nama_pelanggan}, tanggal ${tanggalOrder}\n\n Rincian Pesanan :\n\n${rincianMenu}\n\nMohon segera diproses.`;
                     const payload = {
                         number: waiterUser.handphone,
                         message: message,
@@ -268,6 +343,7 @@ export class OrderService {
 
             await this.sendWhatsappToCustomer(savedOrder);
             await this.forwardToKitchen(savedOrder);
+            await this.forwardToWaiter(savedOrder);
 
             return savedOrder;
         } catch (error) {
