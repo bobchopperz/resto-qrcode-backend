@@ -71,30 +71,52 @@ export class OrderService {
         }
     }
 
-    private generateReceiptSvg(order: OrderDocument): string {
+    private generateReceiptSvg(order: OrderDocument, forReceipt : boolean): string {
         const tanggalOrder = order.timestamp.toLocaleTimeString('id-ID', {
-            hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Jakarta'
+            day:'2-digit', month:'short', year:'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Jakarta'
         });
 
+
+        // kalo tanpa harga di receiptnya
         const itemsText = order.items.flatMap(item => {
-            const mainItemLine = `${item.jumlah}x ${item.nama_menu}`;
-            const optionsLines = item.opsi_terpilih.map(o => `  • ${o.pilihan}`);
-            return [mainItemLine, ...optionsLines];
+            if (forReceipt === false) {
+                const mainItemLine = `${item.jumlah} x ${item.nama_menu}`;
+                const optionsLines = item.opsi_terpilih.map(o => `  • ${o.pilihan}`);
+                return [mainItemLine, ...optionsLines];
+            } else { // pake harga di receiptnya
+                const mainItemLine = `${item.jumlah} x ${item.nama_menu}`;
+                const optionsLines = item.opsi_terpilih.map(o =>
+                    `  • ${o.pilihan}`);
+                const totalHarga = `  • subtotal : ${(item.subtotal_jual * item.jumlah).toLocaleString('id-ID')}`;
+                return [mainItemLine, ...optionsLines, totalHarga];
+            }
         });
+
+        let totalHarga =``;
+        let footer=``;
+        if (forReceipt === true) {
+            totalHarga =` Total harga : ${(order.total_jual_keseluruhan).toLocaleString('id-ID')} `;
+            footer = ' * Terima kasih atas kunjungannya * ';
+        }
+
+        const dash = `-----------------------------------------`;
+        const font_weight = 570;
 
         const headerLines = [
-            "** PESANAN BARU **",
-            `Customer: ${order.nama_pelanggan}`,
-            `Waktu: ${tanggalOrder}`
+            "**Bakso Pedas Nikmat **",
+            dash,
+            `Waktu : ${tanggalOrder} `,
+            `Customer : ${order.nama_pelanggan}`,
+            `Meja : ${order.nomor_meja}`
         ];
 
-        const allLines = [...headerLines, '------------------------------', ...itemsText];
+        const allLines = [...headerLines, dash, ...itemsText, dash, totalHarga, footer];
 
-        const lineHeight = 20;
-        const topPadding = 20;
+        const lineHeight = 40;
+        const topPadding = 40;
         const leftPadding = 20;
         const svgHeight = allLines.length * lineHeight + (topPadding * 2);
-        const svgWidth = 320;
+        const svgWidth = 960;
 
         const textElements = allLines.map((line, index) => {
             const y = topPadding + (index * lineHeight);
@@ -107,8 +129,8 @@ export class OrderService {
             <svg width="${svgWidth}" height="${svgHeight}" xmlns="http://www.w3.org/2000/svg">
                 <rect width="100%" height="100%" fill="white"/>
                 <style>
-                    .normal { font: 14px 'Courier New', monospace; }
-                    .bold { font: bold 16px 'Courier New', monospace; text-anchor: middle; }
+                    .normal { font: 32px 'Courier New', monospace; font-weight: ${font_weight}; }
+                    .bold { font: bold 38px 'Courier New', monospace; text-anchor: middle; font-weight: ${font_weight}; }
                     text { fill: black; }
                     /* Center bold text */
                     .bold {
@@ -143,7 +165,7 @@ export class OrderService {
             }
 
             // 3. Buat SVG dari data pesanan
-            const receiptSvg = this.generateReceiptSvg(order);
+            const receiptSvg = this.generateReceiptSvg(order, true); // kitchen includePrice = false
             const svgBuffer = Buffer.from(receiptSvg);
 
             // 4. Pastikan direktori ada, lalu generate gambar (dengan penanganan EEXIST)
@@ -202,28 +224,47 @@ export class OrderService {
 
     private async forwardToWaiter(order: OrderDocument) {
 
-        try{
-            const whatsappconfig = await this.whatsappConfigService.getWhatsappForwardingConfig();
+        this.logger.log(`Starting forwardToWaiter process for order ${order._id}`);
+        const tempDir= path.join(process.cwd(), 'public', 'receipt-temp');
+        const imagePath = path.join(tempDir, `order-${order._id}.jpeg`);
+        let imageGenerated = false;
 
+        try{
+            // 1. Cek apakah forwarding ke WA aktif
+            const whatsappconfig = await this.whatsappConfigService.getWhatsappForwardingConfig();
             if (!whatsappconfig['waiter-forwarding']){
                 this.logger.log('waiter-forwarding is not active');
                 return;
             }
 
+            // 2. Dapatkan user dengan role = 'waiter'
             const waiterUsers = await this.userService.findByRole('waiter');
             if (waiterUsers.length === 0) {
                 this.logger.log('no users with waiter role');
                 return;
             }
 
-            const rincianMenu = order.items.map(orderItem => {
-                let detailItem = `· ${orderItem.nama_menu} : ${orderItem.jumlah} porsi`;
-                if (orderItem.opsi_terpilih && orderItem.opsi_terpilih.length > 0) {
-                    const detailOpsi = orderItem.opsi_terpilih.map(opsi => `${opsi.nama_opsi} : ${opsi.pilihan}`).join(`\n· `);
-                    detailItem += `\n· ${detailOpsi} \n`;
+            // 3. Buat SVG dari data pesanam
+            const receiptSvg = this.generateReceiptSvg(order, true); //waiter includePrice = true
+            const svgBuffer = Buffer.from(receiptSvg);
+
+            // 4. Pastikan direktori ada, lalu generate gambar dengan error exception EEXIST
+            try {
+                await fs.mkdir(tempDir, { recursive: true });
+            } catch (error) {
+                if (error === 'EEXIST') {
+                    this.logger.warn(`Path ${tempDir} exist as a file. Deleting it to create a directory`);
+                    await fs.unlink(tempDir);
+                    await fs.mkdir(tempDir, { recursive: true });
+                } else {
+                    throw error;
                 }
-                return detailItem;
-            }).join('\n');
+            }
+            await sharp(svgBuffer)
+                .jpeg({ quality: 90 })
+                .toFile(imagePath);
+            imageGenerated = true;
+            this.logger.log(`Generated watier order image at ${imagePath}`);
 
             const tanggalOrder = order.timestamp.toLocaleDateString('id-ID',{
                 day: 'numeric',
@@ -234,19 +275,15 @@ export class OrderService {
                 timeZone: 'Asia/Jakarta',
             });
 
+            // 5. kirim file kw waiter
             for (const waiterUser of waiterUsers) {
                 if (waiterUser.handphone) {
 
-                    const message = `Halo Waiter ${waiterUser.name}, ada orderan atas nama : ${order.nama_pelanggan}, tanggal ${tanggalOrder}\n\n Rincian Pesanan :\n\n${rincianMenu}\n\nMohon segera diproses.`;
-                    const payload = {
-                        number: waiterUser.handphone,
-                        message: message,
-                    };
+                    const formData = new FormData();
+                    formData.append('number', waiterUser.handphone);
+                    formData.append('mesage', `Pesanan atas nama ${order.nama_pelanggan} waktu : ${tanggalOrder}`);
+                    formData.append('image', createReadStream(imagePath));
 
-                    this.logger.log(`Sending WhatsApp message for order ${order._id} to waiter user ${waiterUser.username} (${waiterUser.handphone})`);
-                    await firstValueFrom(
-                        this.httpService.post(this.nestConfigService.get<string>('WHATSAPP_GATEWAY')+'/kirim-pesan', payload),
-                    );
                     this.logger.log(`WhatsApp message sent successfully to waiter user ${waiterUser.username}`);
                 } else {
                     this.logger.warn(`Waiter user ${waiterUser.username} has no handphone number. Skipping.`);
@@ -344,7 +381,7 @@ export class OrderService {
 
             await this.sendWhatsappToCustomer(savedOrder);
             await this.forwardToKitchen(savedOrder);
-            await this.forwardToWaiter(savedOrder);
+            // await this.forwardToWaiter(savedOrder);
 
             return savedOrder;
         } catch (error) {
