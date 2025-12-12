@@ -83,7 +83,7 @@ export class OrderService {
         const itemsText = order.items.flatMap(item => {
             if (forReceipt === false) {
                 const mainItemLine = `${item.jumlah} x ${item.nama_menu}`;
-                const optionsLines = item.opsi_terpilih.map(o => `  • ${o.pilihan}`);
+                const optionsLines = item.opsi_terpilih.map(o => `  •  ${o.pilihan}`);
                 countQueue = `Nomor Antrian : ${order.order_of_the_day}`;
                 return [mainItemLine, ...optionsLines];
             } else { // pake harga di receiptnya
@@ -103,7 +103,7 @@ export class OrderService {
         }
 
         const dash = `-----------------------------------------`;
-        const font_weight = 570;
+        const font_weight = 460;
 
         const headerLines = [
             "**Bakso Pedas Nikmat **",
@@ -133,8 +133,8 @@ export class OrderService {
             <svg width="${svgWidth}" height="${svgHeight}" xmlns="http://www.w3.org/2000/svg">
                 <rect width="100%" height="100%" fill="white"/>
                 <style>
-                    .normal { font: 32px 'Courier New', monospace; font-weight: ${font_weight}; }
-                    .bold { font: bold 38px 'Courier New', monospace; text-anchor: middle; font-weight: ${font_weight}; }
+                    .normal { font: 45px 'Courier New', monospace; font-weight: ${font_weight}; }
+                    .bold { font: bold 54px 'Courier New', monospace; text-anchor: middle; font-weight: ${font_weight}; }
                     text { fill: black; }
                     /* Center bold text */
                     .bold {
