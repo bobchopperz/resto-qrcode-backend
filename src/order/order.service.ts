@@ -165,7 +165,7 @@ export class OrderService {
             }
 
             // 3. Buat SVG dari data pesanan
-            const receiptSvg = this.generateReceiptSvg(order, true); // kitchen includePrice = false
+            const receiptSvg = this.generateReceiptSvg(order, false); // kitchen includePrice = false
             const svgBuffer = Buffer.from(receiptSvg);
 
             // 4. Pastikan direktori ada, lalu generate gambar (dengan penanganan EEXIST)
@@ -252,7 +252,7 @@ export class OrderService {
             try {
                 await fs.mkdir(tempDir, { recursive: true });
             } catch (error) {
-                if (error === 'EEXIST') {
+                if (error.code === 'EEXIST') {
                     this.logger.warn(`Path ${tempDir} exist as a file. Deleting it to create a directory`);
                     await fs.unlink(tempDir);
                     await fs.mkdir(tempDir, { recursive: true });
@@ -266,10 +266,7 @@ export class OrderService {
             imageGenerated = true;
             this.logger.log(`Generated watier order image at ${imagePath}`);
 
-            const tanggalOrder = order.timestamp.toLocaleDateString('id-ID',{
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric',
+            const tanggalOrder = order.timestamp.toLocaleTimeString('id-ID',{
                 hour: 'numeric',
                 minute: 'numeric',
                 timeZone: 'Asia/Jakarta',
@@ -278,11 +275,17 @@ export class OrderService {
             // 5. kirim file kw waiter
             for (const waiterUser of waiterUsers) {
                 if (waiterUser.handphone) {
-
                     const formData = new FormData();
                     formData.append('number', waiterUser.handphone);
-                    formData.append('mesage', `Pesanan atas nama ${order.nama_pelanggan} waktu : ${tanggalOrder}`);
+                    formData.append('message', `Pesanan atas nama ${order.nama_pelanggan} waktu : ${tanggalOrder}`);
                     formData.append('image', createReadStream(imagePath));
+
+                    this.logger.log(`Sending order image to waiter user ${waiterUser.username}`);
+                    await firstValueFrom(
+                        this.httpService.post(this.nestConfigService.get<string>('WHATSAPP_GATEWAY') + '/kirim-media', formData, {
+                            headers: formData.getHeaders(),
+                        }),
+                    );
 
                     this.logger.log(`WhatsApp message sent successfully to waiter user ${waiterUser.username}`);
                 } else {
@@ -292,7 +295,13 @@ export class OrderService {
 
 
         } catch (Error) {
-            console.log(Error);
+            this.logger.error('Failed in forwardToWaiter process', Error.stack, Error.response?.data);
+        } finally {
+            // 6. Hapus file gambar sementara setelah selesai
+            if (imageGenerated) {
+                await fs.unlink(imagePath);
+                this.logger.log(`Removed temporary waiter order image: ${imagePath}`);
+            }
         }
     }
 
