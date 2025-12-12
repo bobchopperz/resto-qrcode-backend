@@ -70,6 +70,9 @@ export class Order {
 
   @Prop({ type: Date, required: true })
   timestamp: Date;
+
+  @Prop({ type: Number, required: true })
+  order_of_the_day: number;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

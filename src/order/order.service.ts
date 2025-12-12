@@ -76,12 +76,15 @@ export class OrderService {
             day:'2-digit', month:'short', year:'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Jakarta'
         });
 
+        let countQueue =``;
+
 
         // kalo tanpa harga di receiptnya
         const itemsText = order.items.flatMap(item => {
             if (forReceipt === false) {
                 const mainItemLine = `${item.jumlah} x ${item.nama_menu}`;
                 const optionsLines = item.opsi_terpilih.map(o => `  • ${o.pilihan}`);
+                countQueue = `Nomor Antrian : ${order.order_of_the_day}`;
                 return [mainItemLine, ...optionsLines];
             } else { // pake harga di receiptnya
                 const mainItemLine = `${item.jumlah} x ${item.nama_menu}`;
@@ -107,7 +110,8 @@ export class OrderService {
             dash,
             `Waktu : ${tanggalOrder} `,
             `Customer : ${order.nama_pelanggan}`,
-            `Meja : ${order.nomor_meja}`
+            `Meja : ${order.nomor_meja}`,
+            countQueue,
         ];
 
         const allLines = [...headerLines, dash, ...itemsText, dash, totalHarga, footer];
@@ -372,6 +376,25 @@ export class OrderService {
 
         const total_margin_keseluruhan = total_jual_keseluruhan - total_modal_keseluruhan;
 
+        // --- LOGIKA BARU: Membuat nomor urut harian ---
+        const now = new Date();
+        const startOfDay = new Date(now);
+        startOfDay.setHours(0, 0, 0, 0); // Set ke awal hari (UTC)
+
+        const endOfDay = new Date(now);
+        endOfDay.setHours(23, 59, 59, 999); // Set ke akhir hari (UTC)
+
+        // Cari order terakhir pada hari ini
+        const lastOrderOfTheDay = await this.orderModel
+            .findOne({
+                timestamp: { $gte: startOfDay, $lte: endOfDay }
+            })
+            .sort({ order_of_the_day: -1 }) // Urutkan berdasarkan nomor urut tertinggi
+            .exec();
+
+        const nextOrderOfTheDay = lastOrderOfTheDay ? lastOrderOfTheDay.order_of_the_day + 1 : 1;
+        // --- AKHIR LOGIKA BARU ---
+
         const newOrder = new this.orderModel({
             nama_pelanggan: createOrderDto.nama_pelanggan,
             no_wa_pelanggan: createOrderDto.no_wa_pelanggan,
@@ -380,7 +403,8 @@ export class OrderService {
             total_jual_keseluruhan,
             total_modal_keseluruhan,
             total_margin_keseluruhan,
-            timestamp: new Date(), // <-- TAMBAHKAN BARIS INI
+            timestamp: now,
+            order_of_the_day: nextOrderOfTheDay, // Simpan nomor urut
         });
 
         try {
@@ -390,7 +414,7 @@ export class OrderService {
 
             await this.sendWhatsappToCustomer(savedOrder);
             await this.forwardToKitchen(savedOrder);
-            // await this.forwardToWaiter(savedOrder);
+            await this.forwardToWaiter(savedOrder);
 
             return savedOrder;
         } catch (error) {
