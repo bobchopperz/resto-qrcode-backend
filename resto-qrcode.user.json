@@ -1,0 +1,18 @@
+[
+{
+  "_id": {
+    "$oid": "69403bea34fc920c9146949c"
+  },
+  "username": "admin",
+  "password": "$2b$10$qOenzg26PmYjFaD3YAiC3eRW6Lb3o9TaOiz9n1Zza9NXtHQqcRAuq",
+  "name": "Admin",
+  "handphone": "08123456789",
+  "role": "admin",
+  "createdAt": {
+    "$date": "2025-12-15T16:48:42.096Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-15T16:48:42.096Z"
+  },
+  "__v": 0
+}]

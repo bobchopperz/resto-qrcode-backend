@@ -1,0 +1,17 @@
+[{
+  "_id": {
+    "$oid": "6908be10eb5b7f17afa2211d"
+  },
+  "name": "whatsappforwarding",
+  "value": {
+    "kitchen-forwarding": false,
+    "waiter-forwarding": false
+  },
+  "createdAt": {
+    "$date": "2025-11-03T14:37:04.621Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-03T15:04:40.180Z"
+  },
+  "__v": 0
+}]
