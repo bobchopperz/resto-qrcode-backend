@@ -22,6 +22,7 @@ export class WhatsappConfigService {
         value: {
           'kitchen-forwarding': true,
           'waiter-forwarding': true,
+          'printer-forwarding': true,
         },
       };
       config = new this.configModel(defaultConfig);
@@ -31,7 +32,7 @@ export class WhatsappConfigService {
     return config.value;
   }
 
-  async updateWhatsappForwardingConfig(newValues: { 'kitchen-forwarding': boolean; 'waiter-forwarding': boolean }): Promise<Record<string, any>> {
+  async updateWhatsappForwardingConfig(newValues: { 'kitchen-forwarding': boolean; 'waiter-forwarding': boolean; 'printer-forwarding': boolean; }): Promise<Record<string, any>> {
     const configName = 'whatsappforwarding';
     this.logger.log(`Received update for '${configName}': ${JSON.stringify(newValues)}`); // Log data yang diterima
 

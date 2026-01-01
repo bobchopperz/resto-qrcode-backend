@@ -15,7 +15,7 @@ export class WhatsappConfigController { // Nama controller diubah
 
   @UseGuards(JwtAuthGuard)
   @Put()
-  async updateWhatsappForwardingConfig(@Body() newValues: { 'kitchen-forwarding': boolean; 'waiter-forwarding': boolean }) {
+  async updateWhatsappForwardingConfig(@Body() newValues: { 'kitchen-forwarding': boolean; 'waiter-forwarding': boolean; 'printer-forwarding': boolean; }) {
     return this.configService.updateWhatsappForwardingConfig(newValues);
   }
 }

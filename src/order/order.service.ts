@@ -51,7 +51,7 @@ export class OrderService {
                 timeZone: 'Asia/Jakarta',
             });
 
-            const message = `Halo Kak ${order.nama_pelanggan}, rincian order Kakak ${tanggalOrder} sebagai berikut : \n\n${rincianMenu} \n\n Total Order : Rp ${order.total_modal_keseluruhan.toLocaleString('id-ID')} \n\n Mohon ditunggu :) `;
+            const message = `Halo Kak ${order.nama_pelanggan}, rincian order Kakak ${tanggalOrder} sebagai berikut : \n\n${rincianMenu} \n\n Total Order : Rp ${order.total_jual_keseluruhan.toLocaleString('id-ID')} \n\n Mohon ditunggu :) `;
 
             const payload = {
                 number: order.no_wa_pelanggan,
@@ -297,7 +297,6 @@ export class OrderService {
                 }
             }
 
-
         } catch (Error) {
             this.logger.error('Failed in forwardToWaiter process', Error.stack, Error.response?.data);
         } finally {
@@ -306,6 +305,54 @@ export class OrderService {
                 await fs.unlink(imagePath);
                 this.logger.log(`Removed temporary waiter order image: ${imagePath}`);
             }
+        }
+    }
+
+    private async forwardToPrinter(order: OrderDocument) {
+        this.logger.log(`Starting forwardToPrinter process for order ${order._id}`);
+
+        try {
+            // 1. Cek apakah forwarding ke Printer aktif
+            const whatsappconfig = await this.whatsappConfigService.getWhatsappForwardingConfig();
+            if (!whatsappconfig['printer-forwarding']){
+                this.logger.log('printer-forwarding is not active');
+                return;
+            }
+
+            // isi message
+            const rincianMenu = order.items.map(orderItem => {
+                let detailItem = `· ${orderItem.nama_menu} : ${orderItem.jumlah} porsi`;
+                if (orderItem.opsi_terpilih && orderItem.opsi_terpilih.length > 0) {
+                    const detailOpsi = orderItem.opsi_terpilih.map(opsi => `${opsi.nama_opsi} : ${opsi.pilihan}, total harga : ${orderItem.jumlah * opsi.harga_jual}`).join(`\n· `);
+                    detailItem += `\n· ${detailOpsi} \n`;
+                }
+                return detailItem;
+            }).join('\n');
+
+            const tanggalOrder = order.timestamp.toLocaleDateString('id-ID',{
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                timeZone: 'Asia/Jakarta',
+            });
+
+            // yg ini printing untuk pelanggan, lengkap dengan harga
+            const message = `Halo Kak ${order.nama_pelanggan}, rincian order Kakak ${tanggalOrder} sebagai berikut : \n\n${rincianMenu} \n\n Total Order : Rp ${order.total_jual_keseluruhan.toLocaleString('id-ID')} \n\n Mohon ditunggu :) `;
+
+            const payload = {
+                sender: order.nama_pelanggan,
+                message: message,
+            };
+
+            this.logger.log(`Sending order receipt to printer`);
+            await firstValueFrom(
+                this.httpService.post(this.nestConfigService.get<string>('WHATSAPP_GATEWAY')+'/cetak-pesan', payload),
+            );
+
+        } catch (Error) {
+            this.logger.error('Failed in forwardToPrinter process', Error.stack, Error.response?.data);
         }
     }
 
@@ -415,6 +462,7 @@ export class OrderService {
             await this.sendWhatsappToCustomer(savedOrder);
             await this.forwardToKitchen(savedOrder);
             await this.forwardToWaiter(savedOrder);
+            await this.forwardToPrinter(savedOrder);
 
             return savedOrder;
         } catch (error) {
