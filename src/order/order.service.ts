@@ -340,6 +340,7 @@ export class OrderService {
 
             // yg ini printing untuk pelanggan, lengkap dengan harga
             const message = `Halo Kak ${order.nama_pelanggan}, rincian order Kakak ${tanggalOrder} sebagai berikut : \n\n${rincianMenu} \n\n Total Order : Rp ${order.total_jual_keseluruhan.toLocaleString('id-ID')} \n\n Sementara sampai sini, berapa karakater kuatnya `;
+            // const message = `halllooooooo okeee apa kabarnya \n \n `;
 
             const payload = {
                 sender: order.nama_pelanggan,
