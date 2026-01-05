@@ -34,11 +34,16 @@ export class OrderService {
 
         try {
             const rincianMenu = order.items.map(orderItem => {
-                let detailItem = `· ${orderItem.nama_menu} : ${orderItem.jumlah} porsi`;
+                let detailItem = `# ${orderItem.nama_menu} : ${orderItem.jumlah} porsi x ${orderItem.harga_jual_satuan.toLocaleString('id-ID')}`;
+                if (orderItem.opsi_terpilih.length>0) detailItem += `\n  Rincian opsi per porsi `;
                 if (orderItem.opsi_terpilih && orderItem.opsi_terpilih.length > 0) {
-                    const detailOpsi = orderItem.opsi_terpilih.map(opsi => `${opsi.nama_opsi} : ${opsi.pilihan}, total harga : ${orderItem.jumlah * opsi.harga_jual}`).join(`\n· `);
-                    detailItem += `\n· ${detailOpsi} \n`;
+                    // yg lama digabungin harga opsinya digabungin di seluruh porsi
+                    // const detailOpsi = orderItem.opsi_terpilih.map(opsi => `${opsi.nama_opsi} : ${opsi.pilihan}, harga : Rp ${(orderItem.jumlah * opsi.harga_jual).toLocaleString('id-ID')}`).join(`\n· `);
+                    // yg baru harga opsi dijelaskan per 1 porsi
+                    const detailOpsi = orderItem.opsi_terpilih.map(opsi => `${opsi.nama_opsi} : ${opsi.pilihan}, harga : Rp ${(opsi.harga_jual).toLocaleString('id-ID')}`).join(`\n  · `);
+                    detailItem += `\n  · ${detailOpsi}`;
                 }
+                    detailItem += `\n  Subtotal : Rp ${orderItem.subtotal_jual.toLocaleString('id-ID')} \n`;
                 return detailItem;
             }).join('\n');
 
@@ -51,7 +56,7 @@ export class OrderService {
                 timeZone: 'Asia/Jakarta',
             });
 
-            const message = `Halo Kak ${order.nama_pelanggan}, rincian order Kakak ${tanggalOrder} sebagai berikut : \n\n${rincianMenu} \n\n Total Order : Rp ${order.total_jual_keseluruhan.toLocaleString('id-ID')} \n\n Mohon ditunggu :) `;
+            const message = `Halo Kak ${order.nama_pelanggan}, rincian order Kakak ${tanggalOrder} sebagai berikut : \n\n${rincianMenu} \n\n## Total Order : Rp ${order.total_jual_keseluruhan.toLocaleString('id-ID')} \n\n Mohon ditunggu :) `;
 
             const payload = {
                 number: order.no_wa_pelanggan,
@@ -77,14 +82,13 @@ export class OrderService {
         });
 
         let countQueue =``;
-
+        countQueue = `Nomor Antrian : ${order.order_of_the_day}`;
 
         // kalo tanpa harga di receiptnya
         const itemsText = order.items.flatMap(item => {
             if (forReceipt === false) {
                 const mainItemLine = `${item.jumlah} x ${item.nama_menu}`;
                 const optionsLines = item.opsi_terpilih.map(o => `  •  ${o.pilihan}`);
-                countQueue = `Nomor Antrian : ${order.order_of_the_day}`;
                 return [mainItemLine, ...optionsLines];
             } else { // pake harga di receiptnya
                 const mainItemLine = `${item.jumlah} x ${item.nama_menu}`;
@@ -340,7 +344,6 @@ export class OrderService {
 
             // yg ini printing untuk pelanggan, lengkap dengan harga
             const message = `Halo Kak ${order.nama_pelanggan}, rincian order Kakak ${tanggalOrder} sebagai berikut : \n\n${rincianMenu} \n\n Total Order : Rp ${order.total_jual_keseluruhan.toLocaleString('id-ID')} \n\n Sementara sampai sini, berapa karakater kuatnya `;
-            // const message = `halllooooooo okeee apa kabarnya \n \n `;
 
             const payload = {
                 sender: order.nama_pelanggan,
@@ -463,7 +466,7 @@ export class OrderService {
             await this.sendWhatsappToCustomer(savedOrder);
             await this.forwardToKitchen(savedOrder);
             await this.forwardToWaiter(savedOrder);
-            await this.forwardToPrinter(savedOrder);
+            // await this.forwardToPrinter(savedOrder);
 
             return savedOrder;
         } catch (error) {
