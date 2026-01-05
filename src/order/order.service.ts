@@ -43,7 +43,7 @@ export class OrderService {
                     const detailOpsi = orderItem.opsi_terpilih.map(opsi => `${opsi.nama_opsi} : ${opsi.pilihan}, harga : Rp ${(opsi.harga_jual).toLocaleString('id-ID')}`).join(`\n  · `);
                     detailItem += `\n  · ${detailOpsi}`;
                 }
-                    detailItem += `\n  Subtotal : Rp ${orderItem.subtotal_jual.toLocaleString('id-ID')} \n`;
+                detailItem += `\n  Subtotal : Rp ${orderItem.subtotal_jual.toLocaleString('id-ID')} \n`;
                 return detailItem;
             }).join('\n');
 
@@ -91,11 +91,13 @@ export class OrderService {
                 const optionsLines = item.opsi_terpilih.map(o => `  •  ${o.pilihan}`);
                 return [mainItemLine, ...optionsLines];
             } else { // pake harga di receiptnya
-                const mainItemLine = `${item.jumlah} x ${item.nama_menu}`;
-                const optionsLines = item.opsi_terpilih.map(o =>
-                    `  • ${o.pilihan}`);
-                const totalHarga = `  • subtotal : ${(item.subtotal_jual * item.jumlah).toLocaleString('id-ID')}`;
-                return [mainItemLine, ...optionsLines, totalHarga];
+                let harga_satuan = `#${item.nama_menu}:${item.jumlah}x${item.harga_jual_satuan.toLocaleString('id-ID')}`;
+                let rincian_opsi =``;
+                let space = ``;
+                if (item.opsi_terpilih.length>0) rincian_opsi= ` \n  Rincian opsi per porsi `;
+                const optionLines = item.opsi_terpilih.map(opsi => `${opsi.pilihan}: Rp ${(opsi.harga_jual).toLocaleString('id-ID')}`);
+                const subtotal = `  Subtotal: Rp ${item.subtotal_jual.toLocaleString('id-ID')}`;
+                return [harga_satuan, rincian_opsi, ...optionLines, subtotal, space];
             }
         });
 
